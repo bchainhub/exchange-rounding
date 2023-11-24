@@ -68,7 +68,7 @@ describe('roundNumber - Prefix and Suffix', () => {
 describe('roundNumber - Space After Decimal', () => {
   it('should add space after every 3 decimal places', () => {
     const result = roundNumber(1234.56789, { spaceAfterDecimal: 3 });
-    expect(result).toBe('1234.567 890 00');
+    expect(result).toBe('1234.567\u00A0890\u00A000');
   });
 });
 
