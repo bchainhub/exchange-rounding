@@ -7,6 +7,8 @@ node_modules
 yarn.lock
 package-lock.json
 
+/dist-test/
+
 .DS_Store
 .AppleDouble
 .LSOverride

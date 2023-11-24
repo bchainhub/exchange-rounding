@@ -19,10 +19,10 @@ function roundNumber(number, options = {}) {
     if (!keepTrailingZeros) {
         numberStr = numberStr.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '');
     }
-    // Divide zeros with space if required
+    // Divide zeros with non-breakable space if required
     if (spaceAfterDecimal !== null) {
         let parts = numberStr.split('.');
-        parts[1] = parts[1].replace(new RegExp(`(\\d{${spaceAfterDecimal}})(?=(\\d))`, 'g'), `$1 `);
+        parts[1] = parts[1].replace(new RegExp(`(\\d{${spaceAfterDecimal}})(?=(\\d))`, 'g'), `$1\u00A0`);
         numberStr = parts.join('.');
     }
     // Add span class for trailing zeros
