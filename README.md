@@ -1,79 +1,89 @@
-# Exchange Rounding
+# Exchange Number Formatting (`ExchNumberFormat`)
 
-`exchange-rounding` is a flexible and powerful rounding utility designed for handling decimal numbers, specifically tailored for financial and exchange-related applications. It offers customizable options to suit a variety of rounding and formatting requirements.
+`ExchNumberFormat` is a comprehensive and customizable number formatting utility, designed specifically for financial and cryptocurrency applications. It extends the standard `Intl.NumberFormat` functionality with support for custom currencies, including cryptocurrencies, and provides additional formatting options.
 
 ## Features
 
-- Customizable decimal places.
-- Selection of rounding methods: `round`, `floor`, `ceil`.
-- Option to keep or remove trailing zeros.
-- Ability to add prefixes and suffixes with non-breaking spaces.
-- Insertion of spaces within numbers after a specified number of decimal places.
-- Application of CSS classes to trailing zeros.
-- Locale-specific formatting options.
+- Support for standard and custom currencies (including cryptocurrencies like Bitcoin, Ethereum, etc.).
+- Customizable rounding modes.
+- Locale-aware formatting with support for different number styles and notations.
+- Ability to handle custom currency symbols, narrow symbols, codes, and names.
+- Customizable decimal places for each currency.
+- Format numbers as parts for detailed customization.
 
 ## Installation
 
 Install the package using npm:
 
 ```bash
-npm install exchange-rounding
+npm install exchange-number-formatting
 ```
 
 Or using yarn:
 
 ```bash
-yarn add exchange-rounding
+yarn add exchange-number-formatting
 ```
 
 ## Usage
 
-Import `roundNumber` from the package and use it in your project:
+Import `ExchNumberFormat` from the package and use it in your project:
 
 ```javascript
-import roundNumber from 'exchange-rounding';
+import ExchNumberFormat from 'exchange-number-formatting';
 
-const options = {
-    decimals: 2,
-    roundFunction: 'floor',
-    keepTrailingZeros: true,
-    prefix: '$',
-    suffix: 'USD',
-    spaceAfterDecimal: 3,
-    spanClass: 'trailing-zeros',
-    localeString: { style: 'currency', currency: 'USD' }
-};
+// Example: Formatting a number with Bitcoin currency
+const bitcoinFormatter = new ExchNumberFormat('en-US', {
+    style: 'currency',
+    currency: 'BTC',
+    customCurrency: 'BTC',
+    roundingMode: 'halfUp',
+    currencyDisplay: 'symbol'
+});
 
-const rounded = roundNumber(1234.56789, options);
-console.log(rounded); // Output will depend on the options
+const formattedBTC = bitcoinFormatter.format(1234.567);
+console.log(formattedBTC); // Output: '₿1,234.57'
+
+// Example: Formatting with custom options
+const customFormatter = new ExchNumberFormat('en-US', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 5
+});
+
+const formattedNumber = customFormatter.format(1234.56789);
+console.log(formattedNumber); // Output: '1,234.56789'
 ```
 
 ## API Reference
 
-### roundNumber(number, options)
+### new ExchNumberFormat(locales, options)
 
-Rounds a number based on the provided options.
+Creates a new `ExchNumberFormat` instance.
 
 #### Parameters
 
-- `number` (Number): The number to round.
-- `options` (Object): An object containing various formatting options.
+- `locales` (String): A string with a BCP 47 language tag, or an array of such strings. For the general form and interpretation of the `locales` argument, see the Intl page.
+- `options` (RoundNumberOptions): An object with properties that represent the formatting options.
 
-#### Options
+#### RoundNumberOptions
 
-- `decimals` (Number): Number of decimal places to retain (default: 8).
-- `roundFunction` (String): Method of rounding - 'round', 'floor', 'ceil' (default: 'floor').
-- `keepTrailingZeros` (Boolean): Keep or remove trailing zeros (default: true).
-- `prefix` (String): String to prepend (default: '').
-- `suffix` (String): String to append (default: '').
-- `spaceAfterDecimal` (Number | null): Insert space after specified decimals (default: null).
-- `spanClass` (String): CSS class for trailing zeros (default: '').
-- `localeString` (Intl.NumberFormatOptions | null): Locale formatting options (default: null).
+- Inherits all options from `Intl.NumberFormatOptions`.
+- `customCurrency` (String): Specify a custom currency code, e.g., 'BTC', 'ETH'.
+- `roundingMode` (String): Rounding mode according to the `Intl.NumberFormat` documentation.
+
+### format(number)
+
+Formats a number according to the instance's locale and formatting options.
+
+### formatToParts(number)
+
+Returns an array of objects representing the number string in parts that can be used for custom formatting.
 
 ## Contributing
 
-Contributions are welcome! If you encounter any issues or have suggestions for improvement, feel free to open an issue on the project's [issues page](https://github.com/bchainhub/exchange-rounding/issues). If you're interested in contributing to the code, please feel free to make a pull request.
+Contributions are welcome! Feel free to open an issue or submit a pull request on our GitHub repository.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the CORE License.

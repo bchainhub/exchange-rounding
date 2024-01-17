@@ -1,87 +1,163 @@
-import roundNumber from '../src/index';
+import ExchNumberFormat from '../src/index';
 
-describe('roundNumber', () => {
-  it('should round a number with default parameters', () => {
-    const result = roundNumber(1234.1234567899);
-    expect(result).toBe('1234.12345678');
+describe('Added currencies', () => {
+  it('Bitcoin with symbol, locale en-US currency and default 8 decimals', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'BTC',
+      roundingMode: 'floor',
+      currencyDisplay: 'symbol'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('₿ 1,234.12345678');
+  });
+
+  it('XCB with name, locale sk-SK currency and default 2 decimals', () => {
+    const formatter = new ExchNumberFormat('sk-SK', {
+      style: 'currency',
+      currency: 'XCB',
+      roundingMode: 'floor',
+      currencyDisplay: 'name'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1 234,12345678 Core');
+  });
+
+  it('USDC with narrowSymbol, locale it-CH currency and default 2 decimals', () => {
+    const formatter = new ExchNumberFormat('it-CH', {
+      style: 'currency',
+      currency: 'USC',
+      roundingMode: 'floor',
+      currencyDisplay: 'narrowSymbol'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('USDCⓈ 1’234.12');
   });
 });
 
-describe('roundNumber - Rounding Methods', () => {
-  it('should round up using ceil', () => {
-    const result = roundNumber(1234.12345666466, { roundFunction: 'ceil' });
-    expect(result).toBe('1234.12345667');
+describe('Shortening/Extending tests', () => {
+  it('USD with symbol, locale en-US currency and minimum digits and decimals', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      roundingMode: 'halfFloor',
+      currencyDisplay: 'symbol',
+      minimumIntegerDigits: 6,
+      minimumFractionDigits: 4
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('$001,234.1235');
   });
 
-  it('should round down using floor', () => {
-    const result = roundNumber(1234.12345677566, { roundFunction: 'floor' });
-    expect(result).toBe('1234.12345677');
+  it('CZK with name, locale cs-CZ currency and 2 maximum significant digits', () => {
+    const formatter = new ExchNumberFormat('cs-CZ', {
+      style: 'currency',
+      currency: 'USD',
+      roundingMode: 'expand',
+      currencyDisplay: 'name',
+      maximumSignificantDigits: 2
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1 300 amerických dolarů');
   });
 
-  it('should round to nearest using round', () => {
-    const result = roundNumber(1234.12345676466, { roundFunction: 'round' });
-    expect(result).toBe('1234.12345676');
-  });
-});
-
-describe('roundNumber - Decimal Places', () => {
-  it('should keep 2 decimal places', () => {
-    const result = roundNumber(1234.567890, { decimals: 2 });
-    expect(result).toBe('1234.56');
-  });
-
-  it('should keep no decimal places', () => {
-    const result = roundNumber(1234.567890, { decimals: 0 });
-    expect(result).toBe('1234');
-  });
-});
-
-describe('roundNumber - Trailing Zeros', () => {
-  it('should keep trailing zeros', () => {
-    const result = roundNumber(1234.5, { keepTrailingZeros: true });
-    expect(result).toBe('1234.50000000');
+  it('USD with symbol, locale en-US currency and short to Billions', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      roundingMode: 'halfFloor',
+      currencyDisplay: 'symbol',
+      useGrouping: true,
+      notation: "compact",
+      compactDisplay: "short"
+    });
+    const result = formatter.format(1234567890.1234567899);
+    expect(result).toBe('$1.2B');
   });
 
-  it('should remove trailing zeros', () => {
-    const result = roundNumber(1234.5000, { keepTrailingZeros: false });
-    expect(result).toBe('1234.5');
-  });
-});
-
-describe('roundNumber - Prefix and Suffix', () => {
-  it('should add prefix', () => {
-    const result = roundNumber(1234.56789, { prefix: '$' });
-    expect(result).toBe('$\u00A01234.56789000');
-  });
-
-  it('should add suffix', () => {
-    const result = roundNumber(1234.56789, { suffix: '€' });
-    expect(result).toBe('1234.56789000\u00A0€');
-  });
-
-  it('should add both prefix and suffix', () => {
-    const result = roundNumber(1234.56789, { prefix: '$', suffix: '€' });
-    expect(result).toBe('$\u00A01234.56789000\u00A0€');
+  it('GBP with symbol, locale en-US currency and long to Millions', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'GBP',
+      roundingMode: 'halfFloor',
+      currencyDisplay: 'narrowSymbol',
+      useGrouping: true,
+      notation: "compact"
+    });
+    const result = formatter.format(1234567.1234567899);
+    expect(result).toBe('£1.2M');
   });
 });
 
-describe('roundNumber - Space After Decimal', () => {
-  it('should add space after every 3 decimal places', () => {
-    const result = roundNumber(1234.56789, { spaceAfterDecimal: 3 });
-    expect(result).toBe('1234.567\u00A0890\u00A000');
+describe('Different locales', () => {
+  it('JPY, locale ja-JP', () => {
+    const formatter = new ExchNumberFormat('ja-JP', {
+      style: 'currency',
+      currency: 'JPY'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('￥1,234');
+  });
+
+  it('RUB, locale ru', () => {
+    const formatter = new ExchNumberFormat('ru', {
+      style: 'currency',
+      currency: 'RUB'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1 234,12 ₽');
+  });
+
+  it('CNY, locale zh', () => {
+    const formatter = new ExchNumberFormat('zh', {
+      style: 'currency',
+      currency: 'CNY'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('¥1,234.12');
+  });
+
+  it('CTN, locale bn-BN', () => {
+    const formatter = new ExchNumberFormat('bn-BN', {
+      style: 'currency',
+      currency: 'CTN'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('১,২৩৪.১২ 𝇊');
+  });
+
+  it('LTC, locale pt-BR', () => {
+    const formatter = new ExchNumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'LTC'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('Ł 1.234,12345679');
   });
 });
 
-describe('roundNumber - Span Class for Zeros', () => {
-  it('should add span class for trailing zeros', () => {
-    const result = roundNumber(1234.5, { spanClass: 'zero-class' });
-    expect(result).toBe('1234.5<span class="zero-class">0000000</span>');
+describe('Decomposed', () => {
+  it('BTC with narrowSymbol, locale en-US currency and default 2 decimals', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'BTC',
+      roundingMode: 'floor',
+      currencyDisplay: 'narrowSymbol'
+    });
+    const result = formatter.formatToParts(1234.1234567899);
+    expect(result).toEqual([{"type": "currency", "value": "BTC₿"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "1"}, {"type": "group", "value": ","}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "12345678"}]);
   });
-});
 
-describe('roundNumber - Locale String Formatting', () => {
-  it('should format number with locale string', () => {
-    const result = roundNumber(1234.56789, { localeString: { style: 'currency', currency: 'USD' } });
-    expect(result).toBe('$1,234.57');
+  it('USD with symbol, locale it-CH currency and minimum digits and decimals', () => {
+    const formatter = new ExchNumberFormat('it-CH', {
+      style: 'currency',
+      currency: 'USD',
+      roundingMode: 'ceil',
+      currencyDisplay: 'symbol',
+      minimumIntegerDigits: 6,
+      minimumFractionDigits: 4
+    });
+    const result = formatter.formatToParts(1234.1234567899);
+    expect(result).toEqual([{"type": "currency", "value": "USD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "001"}, {"type": "group", "value": "’"}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "1235"}]);
   });
 });
