@@ -16,13 +16,13 @@
 Install the package using npm:
 
 ```bash
-npm install exchange-number-formatting
+npm i exchange-rounding
 ```
 
 Or using yarn:
 
 ```bash
-yarn add exchange-number-formatting
+yarn add exchange-rounding
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ yarn add exchange-number-formatting
 Import `ExchNumberFormat` from the package and use it in your project:
 
 ```javascript
-import ExchNumberFormat from 'exchange-number-formatting';
+import ExchNumberFormat from 'exchange-rounding';
 
 // Example: Formatting a number with Bitcoin currency
 const bitcoinFormatter = new ExchNumberFormat('en-US', {
@@ -86,4 +86,4 @@ Contributions are welcome! Feel free to open an issue or submit a pull request o
 
 ## License
 
-This project is licensed under the CORE License.
+This project is licensed under the [CORE License](LICENSE).

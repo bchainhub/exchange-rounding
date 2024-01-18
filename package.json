@@ -1,6 +1,6 @@
 {
   "name": "exchange-rounding",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rounding of decimals for the exchanges.",
   "main": "dist/index.js",
   "type": "module",
@@ -26,7 +26,7 @@
     "ceil"
   ],
   "author": "Blockchain Hub",
-  "license": "MIT",
+  "license": "CORE",
   "devDependencies": {
     "@types/jest": "^29.5.10",
     "@types/node": "^20.9.4",
