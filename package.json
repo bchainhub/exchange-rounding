@@ -1,7 +1,7 @@
 {
   "name": "exchange-rounding",
-  "version": "1.0.1",
-  "description": "Rounding of decimals for the exchanges.",
+  "version": "1.0.2",
+  "description": "Exchange Number Formatting",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -23,7 +23,10 @@
     "transform",
     "floor",
     "round",
-    "ceil"
+    "ceil",
+    "Intl.NumberFormat",
+    "NumberFormat",
+    "Intl"
   ],
   "author": "Blockchain Hub",
   "license": "CORE",
