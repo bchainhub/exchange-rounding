@@ -1,39 +1,148 @@
-function roundNumber(number, options = {}) {
-    const { decimals = 8, roundFunction = 'floor', keepTrailingZeros = true, prefix = '', suffix = '', spaceAfterDecimal = null, spanClass = '', localeString = null } = options;
-    let roundedNumber;
-    // Apply rounding function
-    switch (roundFunction) {
-        case 'round':
-            roundedNumber = Math.round(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
-            break;
-        case 'ceil':
-            roundedNumber = Math.ceil(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
-            break;
-        default:
-            roundedNumber = Math.floor(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
-            break;
+class ExchNumberFormat {
+    constructor(locales, options = {}) {
+        // Custom currency data
+        this.customCurrencyData = {
+            'BCH': {
+                'symbol': 'Ƀ',
+                'narrowSymbol': 'BCHɃ',
+                'code': 'BCH',
+                'name': 'BitcoinCash',
+                'defaultDecimals': 8,
+            },
+            'BTC': {
+                'symbol': '₿',
+                'narrowSymbol': 'BTC₿',
+                'code': 'BTC',
+                'name': 'Bitcoin',
+                'defaultDecimals': 8,
+            },
+            'CTN': {
+                'symbol': 'Ƈ',
+                'narrowSymbol': 'CTNƇ',
+                'code': 'CTN',
+                'name': 'CoreToken',
+                'defaultDecimals': 2,
+            },
+            'ETH': {
+                'symbol': 'Ξ',
+                'narrowSymbol': 'ETHΞ',
+                'code': 'ETH',
+                'name': 'Ethereum',
+                'defaultDecimals': 8,
+            },
+            'LTC': {
+                'symbol': 'Ł',
+                'narrowSymbol': 'LTCŁ',
+                'code': 'LTC',
+                'name': 'Litecoin',
+                'defaultDecimals': 8,
+            },
+            'USC': {
+                'symbol': 'Ⓢ',
+                'narrowSymbol': 'USDCⓈ',
+                'code': 'USDC',
+                'name': 'USD Coin',
+                'defaultDecimals': 2,
+            },
+            'UST': {
+                'symbol': '₮',
+                'narrowSymbol': 'USDT₮',
+                'code': 'USDT',
+                'name': 'Tether',
+                'defaultDecimals': 2,
+            },
+            'XCB': {
+                'symbol': '₡',
+                'narrowSymbol': 'XCB₡',
+                'code': 'XCB',
+                'name': 'Core',
+                'defaultDecimals': 8,
+            },
+            'XMR': {
+                'symbol': 'ɱ',
+                'narrowSymbol': 'XMRɱ',
+                'code': 'XMR',
+                'name': 'Monero',
+                'defaultDecimals': 4,
+            },
+            'XRP': {
+                'symbol': '✕',
+                'narrowSymbol': 'XRP✕',
+                'code': 'XRP',
+                'name': 'Ripple',
+                'defaultDecimals': 2,
+            },
+        };
+        // Default options
+        const defaultOptions = {
+            localeMatcher: 'best fit',
+            style: 'currency',
+            currency: undefined,
+            currencyDisplay: 'symbol',
+            // @ts-ignore
+            roundFunction: 'floor', // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#roundingmode
+            useGrouping: true,
+            notation: 'standard',
+            compactDisplay: 'short',
+        };
+        // Merge user-defined options with default options
+        this.intlOptions = { ...defaultOptions, ...options };
+        this.originalCurrency = this.intlOptions.currency;
+        // Determine the locale
+        let setLocale = locales === 'auto' ? (navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language) : locales;
+        if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
+            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+            this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;
+        }
+        // Create an Intl.NumberFormat instance
+        this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
     }
-    // Convert to string for formatting
-    let numberStr = roundedNumber.toFixed(decimals);
-    // Remove trailing zeros if keepTrailingZeros is false
-    if (!keepTrailingZeros) {
-        numberStr = numberStr.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '');
+    format(number) {
+        let formatted = this.formatter.format(number);
+        return this.replaceCurrency(formatted);
     }
-    // Divide zeros with non-breakable space if required
-    if (spaceAfterDecimal !== null) {
-        let parts = numberStr.split('.');
-        parts[1] = parts[1].replace(new RegExp(`(\\d{${spaceAfterDecimal}})(?=(\\d))`, 'g'), `$1\u00A0`);
-        numberStr = parts.join('.');
+    formatToParts(number) {
+        const parts = this.formatter.formatToParts(number);
+        if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
+            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+            let symbolToReplace = currencyData.symbol;
+            switch (this.intlOptions.currencyDisplay) {
+                case 'narrowSymbol':
+                    symbolToReplace = currencyData.narrowSymbol;
+                    break;
+                case 'code':
+                    symbolToReplace = currencyData.code;
+                    break;
+                case 'name':
+                    symbolToReplace = currencyData.name;
+                    break;
+            }
+            parts.forEach(part => {
+                if (part.type === 'currency') {
+                    part.value = symbolToReplace;
+                }
+            });
+        }
+        return parts;
     }
-    // Add span class for trailing zeros
-    if (spanClass && keepTrailingZeros) {
-        numberStr = numberStr.replace(/0+$/, `<span class="${spanClass}">$&</span>`);
+    replaceCurrency(formattedString) {
+        if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
+            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+            let symbolToReplace = currencyData.symbol;
+            switch (this.intlOptions.currencyDisplay) {
+                case 'narrowSymbol':
+                    symbolToReplace = currencyData.narrowSymbol;
+                    break;
+                case 'code':
+                    symbolToReplace = currencyData.code;
+                    break;
+                case 'name':
+                    symbolToReplace = currencyData.name;
+                    break;
+            }
+            return formattedString.replace(this.originalCurrency, symbolToReplace);
+        }
+        return formattedString;
     }
-    // Apply locale formatting
-    if (localeString) {
-        numberStr = Number(numberStr).toLocaleString(undefined, localeString);
-    }
-    // Add prefix and suffix with non-breaking space
-    return `${prefix ? prefix + '\u00A0' : ''}${numberStr}${suffix ? '\u00A0' + suffix : ''}`;
 }
-export default roundNumber;
+export default ExchNumberFormat;
