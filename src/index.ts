@@ -12,6 +12,13 @@ class ExchNumberFormat {
 	constructor(locales: string, options: RoundNumberOptions = {}) {
 		// Custom currency data
 		this.customCurrencyData = {
+			'BCH': {
+				'symbol': 'Ƀ',
+				'narrowSymbol': 'BCHɃ',
+				'code': 'BCH',
+				'name': 'BitcoinCash',
+				'defaultDecimals': 8,
+			},
 			'BTC': {
 				'symbol': '₿',
 				'narrowSymbol': 'BTC₿',
@@ -19,12 +26,12 @@ class ExchNumberFormat {
 				'name': 'Bitcoin',
 				'defaultDecimals': 8,
 			},
-			'LTC': {
-				'symbol': 'Ł',
-				'narrowSymbol': 'LTCŁ',
-				'code': 'LTC',
-				'name': 'Litecoin',
-				'defaultDecimals': 8,
+			'CTN': {
+				'symbol': 'Ƈ',
+				'narrowSymbol': 'CTNƇ',
+				'code': 'CTN',
+				'name': 'CoreToken',
+				'defaultDecimals': 2,
 			},
 			'ETH': {
 				'symbol': 'Ξ',
@@ -33,19 +40,12 @@ class ExchNumberFormat {
 				'name': 'Ethereum',
 				'defaultDecimals': 8,
 			},
-			'XCB': {
-				'symbol': '₡',
-				'narrowSymbol': 'XCB₡',
-				'code': 'XCB',
-				'name': 'Core',
+			'LTC': {
+				'symbol': 'Ł',
+				'narrowSymbol': 'LTCŁ',
+				'code': 'LTC',
+				'name': 'Litecoin',
 				'defaultDecimals': 8,
-			},
-			'CTN': {
-				'symbol': '𝇊',
-				'narrowSymbol': 'CTN𝇊',
-				'code': 'CTN',
-				'name': 'CoreToken',
-				'defaultDecimals': 2,
 			},
 			'USC': {
 				'symbol': 'Ⓢ',
@@ -59,6 +59,27 @@ class ExchNumberFormat {
 				'narrowSymbol': 'USDT₮',
 				'code': 'USDT',
 				'name': 'Tether',
+				'defaultDecimals': 2,
+			},
+			'XCB': {
+				'symbol': '₡',
+				'narrowSymbol': 'XCB₡',
+				'code': 'XCB',
+				'name': 'Core',
+				'defaultDecimals': 8,
+			},
+			'XMR': {
+				'symbol': 'ɱ',
+				'narrowSymbol': 'XMRɱ',
+				'code': 'XMR',
+				'name': 'Monero',
+				'defaultDecimals': 4,
+			},
+			'XRP': {
+				'symbol': '✕',
+				'narrowSymbol': 'XRP✕',
+				'code': 'XRP',
+				'name': 'Ripple',
 				'defaultDecimals': 2,
 			},
 		};

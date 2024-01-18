@@ -123,7 +123,7 @@ describe('Different locales', () => {
       currency: 'CTN'
     });
     const result = formatter.format(1234.1234567899);
-    expect(result).toBe('১,২৩৪.১২ 𝇊');
+    expect(result).toBe('১,২৩৪.১২ Ƈ');
   });
 
   it('LTC, locale pt-BR', () => {
