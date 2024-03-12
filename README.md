@@ -37,12 +37,12 @@ const bitcoinFormatter = new ExchNumberFormat('en-US', {
     style: 'currency',
     currency: 'BTC',
     customCurrency: 'BTC',
-    roundingMode: 'halfUp',
+    roundingMode: 'halfFloor',
     currencyDisplay: 'symbol'
 });
 
 const formattedBTC = bitcoinFormatter.format(1234.567);
-console.log(formattedBTC); // Output: '₿1,234.57'
+console.log(formattedBTC); // Output: '₿1,234.567'
 
 // Example: Formatting with custom options
 const customFormatter = new ExchNumberFormat('en-US', {
