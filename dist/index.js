@@ -1,13 +1,12 @@
 class ExchNumberFormat {
     constructor(locales, options = {}) {
-        // Custom currency data
         this.customCurrencyData = {
             'BCH': {
                 'symbol': 'Ƀ',
                 'narrowSymbol': 'BCHɃ',
                 'code': 'BCH',
                 'name': 'BitcoinCash',
-                'defaultDecimals': 8,
+                'defaultDecimals': 4,
             },
             'BTC': {
                 'symbol': '₿',
@@ -28,7 +27,7 @@ class ExchNumberFormat {
                 'narrowSymbol': 'ETHΞ',
                 'code': 'ETH',
                 'name': 'Ethereum',
-                'defaultDecimals': 8,
+                'defaultDecimals': 6,
             },
             'LTC': {
                 'symbol': 'Ł',
@@ -56,7 +55,7 @@ class ExchNumberFormat {
                 'narrowSymbol': 'XCB₡',
                 'code': 'XCB',
                 'name': 'Core',
-                'defaultDecimals': 8,
+                'defaultDecimals': 4,
             },
             'XMR': {
                 'symbol': 'ɱ',
@@ -73,28 +72,23 @@ class ExchNumberFormat {
                 'defaultDecimals': 2,
             },
         };
-        // Default options
         const defaultOptions = {
             localeMatcher: 'best fit',
             style: 'currency',
             currency: undefined,
             currencyDisplay: 'symbol',
-            // @ts-ignore
-            roundFunction: 'floor', // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#roundingmode
+            roundFunction: 'floor',
             useGrouping: true,
             notation: 'standard',
             compactDisplay: 'short',
         };
-        // Merge user-defined options with default options
         this.intlOptions = { ...defaultOptions, ...options };
         this.originalCurrency = this.intlOptions.currency;
-        // Determine the locale
         let setLocale = locales === 'auto' ? (navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language) : locales;
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
             const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
             this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;
         }
-        // Create an Intl.NumberFormat instance
         this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
     }
     format(number) {

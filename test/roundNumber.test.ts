@@ -20,7 +20,7 @@ describe('Added currencies', () => {
       currencyDisplay: 'name'
     });
     const result = formatter.format(1234.1234567899);
-    expect(result).toBe('1 234,12345678 Core');
+    expect(result).toBe('1 234,1234 Core');
   });
 
   it('USDC with narrowSymbol, locale it-CH currency and default 2 decimals', () => {
