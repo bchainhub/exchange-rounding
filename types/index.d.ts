@@ -1,5 +1,4 @@
 export interface RoundNumberOptions extends Intl.NumberFormatOptions {
-	customCurrency?: string;
 	roundingMode?: 'ceil' | 'floor' | 'expand' | 'trunc' | 'halfCeil' | 'halfFloor' | 'halfExpand' | 'halfTrunc' | 'halfEven';
 }
 
