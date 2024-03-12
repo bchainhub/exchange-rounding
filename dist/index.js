@@ -84,7 +84,21 @@ class ExchNumberFormat {
         };
         this.intlOptions = { ...defaultOptions, ...options };
         this.originalCurrency = this.intlOptions.currency;
-        let setLocale = locales === 'auto' ? (navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language) : locales;
+        let setLocale;
+        if (locales === 'auto') {
+            if (typeof window !== 'undefined' && navigator.languages && navigator.languages.length) {
+                setLocale = navigator.languages[0];
+            }
+            else if (typeof window !== 'undefined' && navigator.language) {
+                setLocale = navigator.language;
+            }
+            else {
+                setLocale = 'en';
+            }
+        }
+        else {
+            setLocale = locales;
+        }
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
             const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
             this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;

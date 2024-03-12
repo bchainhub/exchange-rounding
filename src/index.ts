@@ -102,7 +102,19 @@ class ExchNumberFormat {
 		this.originalCurrency = this.intlOptions.currency;
 
 		// Determine the locale
-		let setLocale = locales === 'auto' ? (navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language) : locales;
+		let setLocale: string;
+		if (locales === 'auto') {
+			// Check if running in a browser environment
+			if (typeof window !== 'undefined' && navigator.languages && navigator.languages.length) {
+				setLocale = navigator.languages[0];
+			} else if (typeof window !== 'undefined' && navigator.language) {
+				setLocale = navigator.language;
+			} else {
+				setLocale = 'en'; // Default to 'en' or any other default locale
+			}
+		} else {
+			setLocale = locales;
+		}
 
 		if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
 			const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
