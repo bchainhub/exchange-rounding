@@ -36,7 +36,6 @@ import ExchNumberFormat from 'exchange-rounding';
 const bitcoinFormatter = new ExchNumberFormat('en-US', {
     style: 'currency',
     currency: 'BTC',
-    customCurrency: 'BTC',
     roundingMode: 'halfFloor',
     currencyDisplay: 'symbol'
 });
@@ -69,7 +68,6 @@ Creates a new `ExchNumberFormat` instance.
 #### RoundNumberOptions
 
 - Inherits all options from `Intl.NumberFormatOptions`.
-- `customCurrency` (String): Specify a custom currency code, e.g., 'BTC', 'ETH'.
 - `roundingMode` (String): Rounding mode according to the `Intl.NumberFormat` documentation.
 
 ### format(number)

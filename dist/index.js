@@ -27,14 +27,14 @@ class ExchNumberFormat {
                 'narrowSymbol': 'ETHΞ',
                 'code': 'ETH',
                 'name': 'Ethereum',
-                'defaultDecimals': 6,
+                'defaultDecimals': 4,
             },
             'LTC': {
                 'symbol': 'Ł',
                 'narrowSymbol': 'LTCŁ',
                 'code': 'LTC',
                 'name': 'Litecoin',
-                'defaultDecimals': 8,
+                'defaultDecimals': 4,
             },
             'USC': {
                 'symbol': 'Ⓢ',
@@ -112,7 +112,8 @@ class ExchNumberFormat {
     formatToParts(number) {
         const parts = this.formatter.formatToParts(number);
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
-            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+            const originalCurrency = this.originalCurrency.toUpperCase();
+            const currencyData = this.customCurrencyData[originalCurrency];
             let symbolToReplace = currencyData.symbol;
             switch (this.intlOptions.currencyDisplay) {
                 case 'narrowSymbol':
@@ -135,7 +136,8 @@ class ExchNumberFormat {
     }
     replaceCurrency(formattedString) {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
-            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+            const originalCurrency = this.originalCurrency.toUpperCase();
+            const currencyData = this.customCurrencyData[originalCurrency];
             let symbolToReplace = currencyData.symbol;
             switch (this.intlOptions.currencyDisplay) {
                 case 'narrowSymbol':
@@ -148,7 +150,7 @@ class ExchNumberFormat {
                     symbolToReplace = currencyData.name;
                     break;
             }
-            return formattedString.replace(this.originalCurrency, symbolToReplace);
+            return formattedString.replace(originalCurrency, symbolToReplace);
         }
         return formattedString;
     }
