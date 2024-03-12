@@ -1,6 +1,6 @@
 interface RoundNumberOptions extends Intl.NumberFormatOptions {
 	customCurrency?: string;
-	roundingMode?: 'ceil' | 'expand' | 'floor' | 'trunc' | 'halfCeil' | 'halfExpand' | 'halfFloor' | 'halfTrunc' | 'halfEven' | 'halfOdd';
+	roundingMode?: 'ceil' | 'floor' | 'expand' | 'trunc' | 'halfCeil' | 'halfFloor' | 'halfExpand' | 'halfTrunc' | 'halfEven';
 }
 
 class ExchNumberFormat {
