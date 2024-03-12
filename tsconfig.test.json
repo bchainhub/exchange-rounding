@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "Node16",
+    "esModuleInterop": true,
     "outDir": "./dist-test"
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
