@@ -17,7 +17,7 @@ class ExchNumberFormat {
 				'narrowSymbol': 'BCHɃ',
 				'code': 'BCH',
 				'name': 'BitcoinCash',
-				'defaultDecimals': 8,
+				'defaultDecimals': 4,
 			},
 			'BTC': {
 				'symbol': '₿',
@@ -38,7 +38,7 @@ class ExchNumberFormat {
 				'narrowSymbol': 'ETHΞ',
 				'code': 'ETH',
 				'name': 'Ethereum',
-				'defaultDecimals': 8,
+				'defaultDecimals': 6,
 			},
 			'LTC': {
 				'symbol': 'Ł',
@@ -66,7 +66,7 @@ class ExchNumberFormat {
 				'narrowSymbol': 'XCB₡',
 				'code': 'XCB',
 				'name': 'Core',
-				'defaultDecimals': 8,
+				'defaultDecimals': 4,
 			},
 			'XMR': {
 				'symbol': 'ɱ',
