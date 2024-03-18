@@ -16,7 +16,7 @@ export declare class ExchNumberFormat {
 	private customCurrencyData: { [key: string]: CurrencyData };
 	private originalCurrency: string | undefined;
 
-	constructor(locales: string, options?: RoundNumberOptions);
+	constructor(locales: string | undefined, options?: RoundNumberOptions);
 
 	format(number: number): string;
 	formatToParts(number: number): Intl.NumberFormatPart[];

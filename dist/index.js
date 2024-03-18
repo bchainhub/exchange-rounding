@@ -1,6 +1,13 @@
 class ExchNumberFormat {
     constructor(locales, options = {}) {
         this.customCurrencyData = {
+            'ADA': {
+                'symbol': '₳',
+                'narrowSymbol': 'ADA₳',
+                'code': 'ADA',
+                'name': 'Cardano',
+                'defaultDecimals': 2,
+            },
             'BCH': {
                 'symbol': 'Ƀ',
                 'narrowSymbol': 'BCHɃ',
@@ -22,6 +29,20 @@ class ExchNumberFormat {
                 'name': 'CoreToken',
                 'defaultDecimals': 2,
             },
+            'DOT': {
+                'symbol': '•',
+                'narrowSymbol': 'DOT•',
+                'code': 'DOT',
+                'name': 'Polkadot',
+                'defaultDecimals': 2,
+            },
+            'ETC': {
+                'symbol': 'ξ',
+                'narrowSymbol': 'ETCξ',
+                'code': 'ETC',
+                'name': 'EthereumClassic',
+                'defaultDecimals': 3,
+            },
             'ETH': {
                 'symbol': 'Ξ',
                 'narrowSymbol': 'ETHΞ',
@@ -34,7 +55,21 @@ class ExchNumberFormat {
                 'narrowSymbol': 'LTCŁ',
                 'code': 'LTC',
                 'name': 'Litecoin',
-                'defaultDecimals': 4,
+                'defaultDecimals': 3,
+            },
+            'SOL': {
+                'symbol': 'S◎L',
+                'narrowSymbol': 'SOLS◎L',
+                'code': 'SOL',
+                'name': 'Solana',
+                'defaultDecimals': 2,
+            },
+            'TRX': {
+                'symbol': '₵',
+                'narrowSymbol': 'TRX₵',
+                'code': 'TRX',
+                'name': 'Tron',
+                'defaultDecimals': 2,
             },
             'USC': {
                 'symbol': 'Ⓢ',
@@ -55,14 +90,14 @@ class ExchNumberFormat {
                 'narrowSymbol': 'XCB₡',
                 'code': 'XCB',
                 'name': 'Core',
-                'defaultDecimals': 4,
+                'defaultDecimals': 3,
             },
             'XMR': {
                 'symbol': 'ɱ',
                 'narrowSymbol': 'XMRɱ',
                 'code': 'XMR',
                 'name': 'Monero',
-                'defaultDecimals': 4,
+                'defaultDecimals': 3,
             },
             'XRP': {
                 'symbol': '✕',
@@ -84,7 +119,7 @@ class ExchNumberFormat {
         };
         this.intlOptions = { ...defaultOptions, ...options };
         this.originalCurrency = this.intlOptions.currency;
-        let setLocale;
+        let setLocale = undefined;
         if (locales === 'auto') {
             if (typeof window !== 'undefined' && navigator.languages && navigator.languages.length) {
                 setLocale = navigator.languages[0];
@@ -102,6 +137,11 @@ class ExchNumberFormat {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
             const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
             this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;
+        }
+        else if (!this.originalCurrency) {
+            this.intlOptions.style = 'decimal';
+            this.intlOptions.minimumFractionDigits = 2;
+            this.intlOptions.maximumFractionDigits = 2;
         }
         this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
     }

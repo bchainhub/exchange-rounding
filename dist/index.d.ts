@@ -6,7 +6,7 @@ declare class ExchNumberFormat {
     private intlOptions;
     private customCurrencyData;
     private originalCurrency;
-    constructor(locales: string, options?: RoundNumberOptions);
+    constructor(locales: string | undefined, options?: RoundNumberOptions);
     format(number: number): string;
     formatToParts(number: number): Intl.NumberFormatPart[];
     private replaceCurrency;
