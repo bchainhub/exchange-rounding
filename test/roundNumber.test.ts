@@ -20,7 +20,7 @@ describe('Added currencies', () => {
       currencyDisplay: 'name'
     });
     const result = formatter.format(1234.1234567899);
-    expect(result).toBe('1 234,1234 Core');
+    expect(result).toBe('1 234,123 Core');
   });
 
   it('XCB with symbol, locale en', () => {
@@ -30,7 +30,7 @@ describe('Added currencies', () => {
       currencyDisplay: 'symbol'
     });
     const result = formatter.format(1234.1234567899);
-    expect(result).toBe('₡ 1,234.1235');
+    expect(result).toBe('₡ 1,234.123');
   });
 
   it('USDC with narrowSymbol, locale it-CH currency and default 2 decimals', () => {
@@ -142,7 +142,17 @@ describe('Different locales', () => {
       currency: 'LTC'
     });
     const result = formatter.format(1234.1234567899);
-    expect(result).toBe('Ł 1.234,1235');
+    expect(result).toBe('Ł 1.234,123');
+  });
+});
+
+describe('Defaults', () => {
+  it('Default locale and no currency', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1,234.12');
   });
 });
 
@@ -179,6 +189,6 @@ describe('Decomposed', () => {
       currencyDisplay: 'symbol'
     });
     const result = formatter.formatToParts(1234.1234567899);
-    expect(result).toEqual([{"type": "currency", "value": "₡"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "1"}, {"type": "group", "value": ","}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "1234"}]);
+    expect(result).toEqual([{"type": "currency", "value": "₡"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "1"}, {"type": "group", "value": ","}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "123"}]);
   });
 });
