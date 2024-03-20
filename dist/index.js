@@ -116,6 +116,8 @@ class ExchNumberFormat {
             useGrouping: true,
             notation: 'standard',
             compactDisplay: 'short',
+            wrapped: false,
+            wrappedSymbol: 'w',
         };
         this.intlOptions = { ...defaultOptions, ...options };
         this.originalCurrency = this.intlOptions.currency;
@@ -154,16 +156,20 @@ class ExchNumberFormat {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
             const originalCurrency = this.originalCurrency.toUpperCase();
             const currencyData = this.customCurrencyData[originalCurrency];
-            let symbolToReplace = currencyData.symbol;
+            let symbolToReplace = this.intlOptions.wrapped ?
+                this.intlOptions.wrappedSymbol + currencyData.symbol : currencyData.symbol;
             switch (this.intlOptions.currencyDisplay) {
                 case 'narrowSymbol':
-                    symbolToReplace = currencyData.narrowSymbol;
+                    symbolToReplace = this.intlOptions.wrapped ?
+                        this.intlOptions.wrappedSymbol + currencyData.narrowSymbol : currencyData.narrowSymbol;
                     break;
                 case 'code':
-                    symbolToReplace = currencyData.code;
+                    symbolToReplace = this.intlOptions.wrapped ?
+                        this.intlOptions.wrappedSymbol + currencyData.code : currencyData.code;
                     break;
                 case 'name':
-                    symbolToReplace = currencyData.name;
+                    symbolToReplace = this.intlOptions.wrapped ?
+                        this.intlOptions.wrappedSymbol + currencyData.name : currencyData.name;
                     break;
             }
             parts.forEach(part => {
@@ -178,16 +184,20 @@ class ExchNumberFormat {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
             const originalCurrency = this.originalCurrency.toUpperCase();
             const currencyData = this.customCurrencyData[originalCurrency];
-            let symbolToReplace = currencyData.symbol;
+            let symbolToReplace = this.intlOptions.wrapped ?
+                this.intlOptions.wrappedSymbol + currencyData.symbol : currencyData.symbol;
             switch (this.intlOptions.currencyDisplay) {
                 case 'narrowSymbol':
-                    symbolToReplace = currencyData.narrowSymbol;
+                    symbolToReplace = this.intlOptions.wrapped ?
+                        this.intlOptions.wrappedSymbol + currencyData.narrowSymbol : currencyData.narrowSymbol;
                     break;
                 case 'code':
-                    symbolToReplace = currencyData.code;
+                    symbolToReplace = this.intlOptions.wrapped ?
+                        this.intlOptions.wrappedSymbol + currencyData.code : currencyData.code;
                     break;
                 case 'name':
-                    symbolToReplace = currencyData.name;
+                    symbolToReplace = this.intlOptions.wrapped ?
+                        this.intlOptions.wrappedSymbol + currencyData.name : currencyData.name;
                     break;
             }
             return formattedString.replace(originalCurrency, symbolToReplace);

@@ -1,6 +1,6 @@
 {
   "name": "exchange-rounding",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Exchange Number Formatting",
   "main": "dist/index.js",
   "type": "module",
@@ -36,7 +36,7 @@
   "license": "CORE",
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.26",
+    "@types/node": "^20.11.30",
     "esm": "^3.2.25",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
