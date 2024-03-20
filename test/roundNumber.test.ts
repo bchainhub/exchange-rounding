@@ -156,6 +156,18 @@ describe('Defaults', () => {
   });
 });
 
+describe('Wrapped coins', () => {
+  it('Default locale and no currency', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'BTC',
+      wrapped: true,
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('w₿ 1,234.12345679');
+  });
+});
+
 describe('Decomposed', () => {
   it('BTC with narrowSymbol, locale en-US currency and default 2 decimals', () => {
     const formatter = new ExchNumberFormat('en-US', {

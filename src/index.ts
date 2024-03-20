@@ -1,5 +1,7 @@
 interface RoundNumberOptions extends Intl.NumberFormatOptions {
 	roundingMode?: 'ceil' | 'floor' | 'expand' | 'trunc' | 'halfCeil' | 'halfFloor' | 'halfExpand' | 'halfTrunc' | 'halfEven';
+	wrapped?: boolean;
+	wrappedSymbol?: string;
 }
 
 class ExchNumberFormat {
@@ -129,6 +131,8 @@ class ExchNumberFormat {
 			useGrouping: true,
 			notation: 'standard',
 			compactDisplay: 'short',
+			wrapped: false,
+			wrappedSymbol: 'w',
 		};
 
 		// Merge user-defined options with default options
@@ -174,17 +178,21 @@ class ExchNumberFormat {
 		if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
 			const originalCurrency = this.originalCurrency.toUpperCase();
 			const currencyData = this.customCurrencyData[originalCurrency];
-			let symbolToReplace = currencyData.symbol;
+			let symbolToReplace = this.intlOptions.wrapped ?
+				this.intlOptions.wrappedSymbol + currencyData.symbol : currencyData.symbol;
 
 			switch (this.intlOptions.currencyDisplay) {
 				case 'narrowSymbol':
-					symbolToReplace = currencyData.narrowSymbol;
+					symbolToReplace = this.intlOptions.wrapped ?
+						this.intlOptions.wrappedSymbol + currencyData.narrowSymbol : currencyData.narrowSymbol;
 					break;
 				case 'code':
-					symbolToReplace = currencyData.code;
+					symbolToReplace = this.intlOptions.wrapped ?
+						this.intlOptions.wrappedSymbol + currencyData.code : currencyData.code;
 					break;
 				case 'name':
-					symbolToReplace = currencyData.name;
+					symbolToReplace = this.intlOptions.wrapped ?
+						this.intlOptions.wrappedSymbol + currencyData.name : currencyData.name;
 					break;
 			}
 
@@ -202,16 +210,20 @@ class ExchNumberFormat {
 		if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
 			const originalCurrency = this.originalCurrency.toUpperCase();
 			const currencyData = this.customCurrencyData[originalCurrency];
-			let symbolToReplace = currencyData.symbol;
+			let symbolToReplace = this.intlOptions.wrapped ?
+				this.intlOptions.wrappedSymbol + currencyData.symbol : currencyData.symbol;
 			switch (this.intlOptions.currencyDisplay) {
 				case 'narrowSymbol':
-					symbolToReplace = currencyData.narrowSymbol;
+					symbolToReplace = this.intlOptions.wrapped ?
+						this.intlOptions.wrappedSymbol + currencyData.narrowSymbol : currencyData.narrowSymbol;
 					break;
 				case 'code':
-					symbolToReplace = currencyData.code;
+					symbolToReplace = this.intlOptions.wrapped ?
+						this.intlOptions.wrappedSymbol + currencyData.code : currencyData.code;
 					break;
 				case 'name':
-					symbolToReplace = currencyData.name;
+					symbolToReplace = this.intlOptions.wrapped ?
+						this.intlOptions.wrappedSymbol + currencyData.name : currencyData.name;
 					break;
 			}
 			return formattedString.replace(originalCurrency, symbolToReplace);
