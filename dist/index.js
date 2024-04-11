@@ -1,112 +1,121 @@
 class ExchNumberFormat {
     constructor(locales, options = {}) {
+        this.version = '1.1.0';
         this.customCurrencyData = {
             'ADA': {
                 'symbol': '₳',
-                'narrowSymbol': 'ADA₳',
+                'narrowSymbol': '₳',
                 'code': 'ADA',
                 'name': 'Cardano',
                 'defaultDecimals': 2,
             },
             'BCH': {
                 'symbol': 'Ƀ',
-                'narrowSymbol': 'BCHɃ',
+                'narrowSymbol': 'Ƀ',
                 'code': 'BCH',
                 'name': 'BitcoinCash',
                 'defaultDecimals': 4,
             },
             'BTC': {
                 'symbol': '₿',
-                'narrowSymbol': 'BTC₿',
+                'narrowSymbol': '₿',
                 'code': 'BTC',
                 'name': 'Bitcoin',
                 'defaultDecimals': 8,
             },
             'CTN': {
                 'symbol': 'Ƈ',
-                'narrowSymbol': 'CTNƇ',
+                'narrowSymbol': 'Ƈ',
                 'code': 'CTN',
                 'name': 'CoreToken',
                 'defaultDecimals': 2,
             },
             'DOT': {
                 'symbol': '•',
-                'narrowSymbol': 'DOT•',
+                'narrowSymbol': '•',
                 'code': 'DOT',
                 'name': 'Polkadot',
                 'defaultDecimals': 2,
             },
             'ETC': {
                 'symbol': 'ξ',
-                'narrowSymbol': 'ETCξ',
+                'narrowSymbol': 'ξ',
                 'code': 'ETC',
                 'name': 'EthereumClassic',
                 'defaultDecimals': 3,
             },
             'ETH': {
                 'symbol': 'Ξ',
-                'narrowSymbol': 'ETHΞ',
+                'narrowSymbol': 'Ξ',
                 'code': 'ETH',
                 'name': 'Ethereum',
                 'defaultDecimals': 4,
             },
             'LTC': {
                 'symbol': 'Ł',
-                'narrowSymbol': 'LTCŁ',
+                'narrowSymbol': 'Ł',
                 'code': 'LTC',
                 'name': 'Litecoin',
                 'defaultDecimals': 3,
             },
             'SOL': {
                 'symbol': 'S◎L',
-                'narrowSymbol': 'SOLS◎L',
+                'narrowSymbol': 'S◎L',
                 'code': 'SOL',
                 'name': 'Solana',
                 'defaultDecimals': 2,
             },
             'TRX': {
                 'symbol': '₵',
-                'narrowSymbol': 'TRX₵',
+                'narrowSymbol': '₵',
                 'code': 'TRX',
                 'name': 'Tron',
                 'defaultDecimals': 2,
             },
-            'USC': {
+            'USDC': {
                 'symbol': 'Ⓢ',
-                'narrowSymbol': 'USDCⓈ',
+                'narrowSymbol': 'USⓈ',
                 'code': 'USDC',
                 'name': 'USD Coin',
                 'defaultDecimals': 2,
             },
-            'UST': {
+            'USDT': {
                 'symbol': '₮',
-                'narrowSymbol': 'USDT₮',
+                'narrowSymbol': 'US₮',
                 'code': 'USDT',
                 'name': 'Tether',
                 'defaultDecimals': 2,
             },
             'XCB': {
                 'symbol': '₡',
-                'narrowSymbol': 'XCB₡',
+                'narrowSymbol': '₡',
                 'code': 'XCB',
                 'name': 'Core',
                 'defaultDecimals': 3,
             },
             'XMR': {
                 'symbol': 'ɱ',
-                'narrowSymbol': 'XMRɱ',
+                'narrowSymbol': 'ɱ',
                 'code': 'XMR',
                 'name': 'Monero',
                 'defaultDecimals': 3,
             },
             'XRP': {
                 'symbol': '✕',
-                'narrowSymbol': 'XRP✕',
+                'narrowSymbol': '✕',
                 'code': 'XRP',
                 'name': 'Ripple',
                 'defaultDecimals': 2,
             },
+            'XXX': {
+                'symbol': '¤',
+                'narrowSymbol': '¤',
+                'code': 'XXX',
+                'name': 'Unknown',
+                'defaultDecimals': 2,
+            },
         };
+        this.aliases = {};
         const defaultOptions = {
             localeMatcher: 'best fit',
             style: 'currency',
@@ -118,32 +127,26 @@ class ExchNumberFormat {
             compactDisplay: 'short',
             wrapped: false,
             wrappedSymbol: 'w',
+            digitalized: false,
+            digitalizedSymbol: 'd',
+            useAliases: true,
         };
         this.intlOptions = { ...defaultOptions, ...options };
         this.originalCurrency = this.intlOptions.currency;
-        let setLocale = undefined;
-        if (locales === 'auto') {
-            if (typeof window !== 'undefined' && navigator.languages && navigator.languages.length) {
-                setLocale = navigator.languages[0];
-            }
-            else if (typeof window !== 'undefined' && navigator.language) {
-                setLocale = navigator.language;
-            }
-            else {
-                setLocale = 'en';
-            }
+        if (this.intlOptions.useAliases && this.originalCurrency && this.aliases[this.originalCurrency]) {
+            this.originalCurrency = this.aliases[this.originalCurrency];
         }
-        else {
-            setLocale = locales;
-        }
-        if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
-            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+        let setLocale = locales === 'auto' ? this.determineLocale() : locales;
+        const currencyData = this.customCurrencyData[this.originalCurrency?.toUpperCase() || ''];
+        if (this.originalCurrency && currencyData) {
+            this.intlOptions.currency = 'XYZ';
             this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;
         }
-        else if (!this.originalCurrency) {
-            this.intlOptions.style = 'decimal';
-            this.intlOptions.minimumFractionDigits = 2;
-            this.intlOptions.maximumFractionDigits = 2;
+        else if (this.originalCurrency) {
+            this.intlOptions.style = 'currency';
+        }
+        else {
+            this.useDecimalStyle();
         }
         this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
     }
@@ -156,20 +159,16 @@ class ExchNumberFormat {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
             const originalCurrency = this.originalCurrency.toUpperCase();
             const currencyData = this.customCurrencyData[originalCurrency];
-            let symbolToReplace = this.intlOptions.wrapped ?
-                this.intlOptions.wrappedSymbol + currencyData.symbol : currencyData.symbol;
+            let symbolToReplace = this.addType(currencyData.symbol);
             switch (this.intlOptions.currencyDisplay) {
                 case 'narrowSymbol':
-                    symbolToReplace = this.intlOptions.wrapped ?
-                        this.intlOptions.wrappedSymbol + currencyData.narrowSymbol : currencyData.narrowSymbol;
+                    symbolToReplace = this.addType(currencyData.narrowSymbol);
                     break;
                 case 'code':
-                    symbolToReplace = this.intlOptions.wrapped ?
-                        this.intlOptions.wrappedSymbol + currencyData.code : currencyData.code;
+                    symbolToReplace = this.addType(currencyData.code);
                     break;
                 case 'name':
-                    symbolToReplace = this.intlOptions.wrapped ?
-                        this.intlOptions.wrappedSymbol + currencyData.name : currencyData.name;
+                    symbolToReplace = this.addType(currencyData.name);
                     break;
             }
             parts.forEach(part => {
@@ -182,27 +181,50 @@ class ExchNumberFormat {
     }
     replaceCurrency(formattedString) {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
-            const originalCurrency = this.originalCurrency.toUpperCase();
-            const currencyData = this.customCurrencyData[originalCurrency];
-            let symbolToReplace = this.intlOptions.wrapped ?
-                this.intlOptions.wrappedSymbol + currencyData.symbol : currencyData.symbol;
+            const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
+            let replacementValue;
             switch (this.intlOptions.currencyDisplay) {
                 case 'narrowSymbol':
-                    symbolToReplace = this.intlOptions.wrapped ?
-                        this.intlOptions.wrappedSymbol + currencyData.narrowSymbol : currencyData.narrowSymbol;
+                    replacementValue = this.addType(currencyData.narrowSymbol);
                     break;
                 case 'code':
-                    symbolToReplace = this.intlOptions.wrapped ?
-                        this.intlOptions.wrappedSymbol + currencyData.code : currencyData.code;
+                    replacementValue = this.addType(currencyData.code);
                     break;
                 case 'name':
-                    symbolToReplace = this.intlOptions.wrapped ?
-                        this.intlOptions.wrappedSymbol + currencyData.name : currencyData.name;
+                    replacementValue = this.addType(currencyData.name);
+                    break;
+                default:
+                    replacementValue = this.addType(currencyData.symbol);
                     break;
             }
-            return formattedString.replace(originalCurrency, symbolToReplace);
+            return formattedString.replace('XYZ', replacementValue);
         }
         return formattedString;
+    }
+    useDecimalStyle() {
+        this.intlOptions.style = 'decimal';
+        this.intlOptions.minimumFractionDigits = this.intlOptions.minimumFractionDigits !== undefined ? this.intlOptions.minimumFractionDigits : 2;
+        this.intlOptions.maximumFractionDigits = this.intlOptions.maximumFractionDigits !== undefined ? this.intlOptions.maximumFractionDigits : 2;
+        delete this.intlOptions.currency;
+    }
+    determineLocale() {
+        if (typeof window !== 'undefined' && navigator.languages && navigator.languages.length) {
+            return navigator.languages[0];
+        }
+        else if (typeof window !== 'undefined' && navigator.language) {
+            return navigator.language;
+        }
+        return 'en';
+    }
+    addType(value) {
+        let output = value;
+        if (this.intlOptions.digitalized) {
+            output = this.intlOptions.digitalizedSymbol + output;
+        }
+        if (this.intlOptions.wrapped) {
+            output = this.intlOptions.wrappedSymbol + output;
+        }
+        return output;
     }
 }
 export default ExchNumberFormat;
