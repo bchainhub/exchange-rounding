@@ -326,12 +326,6 @@ describe('Decomposed', () => {
 });
 
 describe('Additional', () => {
-  it('Print current version', () => {
-    const formatter = new ExchNumberFormat();
-    const result = formatter.version;
-    expect(result).toBe('1.1.1');
-  });
-
   it('Check if currency is supported - XCB should be', () => {
     const formatter = new ExchNumberFormat(undefined);
     const result = formatter.isCurrencySupported('xcb');
@@ -357,5 +351,11 @@ describe('Additional', () => {
     });
     const result = formatter.format(1234.1234567899);
     expect(result).toBe('¤ 1,234.12');
+  });
+
+  it('Print current version', () => {
+    const formatter = new ExchNumberFormat();
+    const result = formatter.version;
+    expect(result).toBe('1.1.2');
   });
 });

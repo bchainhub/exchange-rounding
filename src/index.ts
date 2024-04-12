@@ -11,7 +11,7 @@ interface RoundNumberOptions extends Intl.NumberFormatOptions {
 }
 
 class ExchNumberFormat {
-	version: string = '1.1.1';
+	version: string = '1.1.2';
 	private replacer: string = 'XYZ';
 	private formatter!: Intl.NumberFormat;
 	private intlOptions: RoundNumberOptions;
