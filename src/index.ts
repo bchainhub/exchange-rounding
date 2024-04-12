@@ -2,22 +2,28 @@ interface RoundNumberOptions extends Intl.NumberFormatOptions {
 	roundingMode?: 'ceil' | 'floor' | 'expand' | 'trunc' | 'halfCeil' | 'halfFloor' | 'halfExpand' | 'halfTrunc' | 'halfEven';
 	wrapped?: boolean;
 	wrappedSymbol?: string;
-	digitalized?: boolean;
-	digitalizedSymbol?: string;
+	digitized?: boolean;
+	digitizedSymbol?: string;
 	useAliases?: boolean;
+	aliases?: { [key: string]: string };
+	useCustomCurrency?: boolean;
+	customCurrency?: { [key: string]: { symbol: string, narrowSymbol: string, code: string, name: string, defaultDecimals: number } };
 }
 
 class ExchNumberFormat {
-	version: string = '1.1.0';
-	private formatter: Intl.NumberFormat;
+	version: string = '1.1.1';
+	private replacer: string = 'XYZ';
+	private formatter!: Intl.NumberFormat;
 	private intlOptions: RoundNumberOptions;
 	private customCurrencyData: { [key: string]: { symbol: string, narrowSymbol: string, code: string, name: string, defaultDecimals: number } };
-	private aliases: { [key: string]: string };
+	private totalCurrencyData: { [key: string]: { symbol: string, narrowSymbol: string, code: string, name: string, defaultDecimals: number } } = {};
 	private originalCurrency: string | undefined;
+	private totalAliases: { [key: string]: string } = {};
+	private internalAliases: { [key: string]: string } = {};
 
-	constructor(locales: string | undefined, options: RoundNumberOptions = {}) {
+	constructor(locales?: string | undefined, options: RoundNumberOptions = {}) {
 		// Custom currency data
-		// Cannot be the duplicate of the ISO 4217 currency code and 'XYZ' is reserved for replacements
+		// Cannot be the duplicate of the ISO 4217 currency code and `replacer` is reserved for replacements
 		this.customCurrencyData = {
 			'ADA': {
 				'symbol': '₳',
@@ -103,11 +109,25 @@ class ExchNumberFormat {
 				'name': 'Tether',
 				'defaultDecimals': 2,
 			},
+			'XAB': {
+				'symbol': 't₡',
+				'narrowSymbol': 't₡',
+				'code': 'XAB',
+				'name': 'CoreDevin',
+				'defaultDecimals': 3,
+			},
 			'XCB': {
 				'symbol': '₡',
 				'narrowSymbol': '₡',
 				'code': 'XCB',
 				'name': 'Core',
+				'defaultDecimals': 3,
+			},
+			'XCE': {
+				'symbol': '₡',
+				'narrowSymbol': '₡',
+				'code': 'XCE',
+				'name': 'CoreKoliba',
 				'defaultDecimals': 3,
 			},
 			'XMR': {
@@ -135,7 +155,7 @@ class ExchNumberFormat {
 			},
 		};
 
-		this.aliases = {};
+		this.internalAliases = {};
 
 		// Default options
 		const defaultOptions: RoundNumberOptions = {
@@ -150,37 +170,56 @@ class ExchNumberFormat {
 			compactDisplay: 'short',
 			wrapped: false,
 			wrappedSymbol: 'w',
-			digitalized: false,
-			digitalizedSymbol: 'd',
+			digitized: false,
+			digitizedSymbol: 'd',
 			useAliases: true,
+			aliases: {},
+			useCustomCurrency: true,
+			customCurrency: {},
 		};
 
 		// Merge user-defined options with default options
 		this.intlOptions = { ...defaultOptions, ...options };
+		this.totalAliases = { ...this.intlOptions.aliases, ...this.internalAliases };
+
+		if (this.intlOptions.useCustomCurrency) {
+			this.totalCurrencyData = { ...this.customCurrencyData, ...this.intlOptions.customCurrency };
+		} else {
+			this.totalCurrencyData = {};
+		}
+
 		this.originalCurrency = this.intlOptions.currency;
-		if (this.intlOptions.useAliases && this.originalCurrency && this.aliases[this.originalCurrency]) {
-			this.originalCurrency = this.aliases[this.originalCurrency];
+
+		if (this.intlOptions.useAliases && this.originalCurrency && this.totalAliases[this.originalCurrency]) {
+			this.originalCurrency = this.totalAliases[this.originalCurrency];
 		}
 
 		// Determine the locale
 		let setLocale: string | undefined = locales === 'auto' ? this.determineLocale() : locales;
 
-		const currencyData = this.customCurrencyData[this.originalCurrency?.toUpperCase() || ''];
+		const currencyData = this.totalCurrencyData[this.originalCurrency?.toUpperCase() || ''];
 		if (this.originalCurrency && currencyData) {
 			// It's a custom/extended currency
-			this.intlOptions.currency = 'XYZ'; // Special reserved handler for custom currency
+			this.intlOptions.currency = this.replacer; // Special reserved handler for custom currency
 			this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;
-		} else if (this.originalCurrency) {
-			// It's a recognized ISO currency, or the custom handling isn't required
-			// Ensure Intl.NumberFormat will handle this without defaulting to decimal style
-			this.intlOptions.style = 'currency';
-		} else {
-			// No currency provided, use decimal style
-			this.useDecimalStyle();
 		}
 
-		// Create an Intl.NumberFormat instance
-		this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
+		try {
+			if(this.intlOptions.currency) {
+				this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
+			} else {
+				this.useDecimalStyle();
+				this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
+			}
+		} catch (error) {
+			if (error instanceof RangeError) {
+				this.useDecimalStyle();
+				this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
+			} else {
+				console.error("Error creating Intl.NumberFormat instance");
+				return;
+			}
+		}
 	}
 
 	format(number: number): string {
@@ -191,26 +230,17 @@ class ExchNumberFormat {
 	formatToParts(number: number): Intl.NumberFormatPart[] {
 		const parts = this.formatter.formatToParts(number);
 
-		if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
-			const originalCurrency = this.originalCurrency.toUpperCase();
-			const currencyData = this.customCurrencyData[originalCurrency];
-			let symbolToReplace = this.addType(currencyData.symbol);
-
-			switch (this.intlOptions.currencyDisplay) {
-				case 'narrowSymbol':
-					symbolToReplace = this.addType(currencyData.narrowSymbol);
-					break;
-				case 'code':
-					symbolToReplace = this.addType(currencyData.code);
-					break;
-				case 'name':
-					symbolToReplace = this.addType(currencyData.name);
-					break;
-			}
-
+		if (this.originalCurrency && this.totalCurrencyData[this.originalCurrency.toUpperCase()]) {
+			const currencyData = this.totalCurrencyData[this.originalCurrency.toUpperCase()];
 			parts.forEach(part => {
 				if (part.type === 'currency') {
-					part.value = symbolToReplace;
+					part.value = part.value.replace(this.replacer, this.addType(currencyData.symbol));
+				}
+			});
+		} else if (this.originalCurrency) {
+			parts.forEach(part => {
+				if (part.type === 'currency') {
+					part.value = this.addType(part.value);
 				}
 			});
 		}
@@ -218,11 +248,25 @@ class ExchNumberFormat {
 		return parts;
 	}
 
-	private replaceCurrency(formattedString: string): string {
+	isCurrencySupported(currency: string): boolean {
+		try {
+			new Intl.NumberFormat(undefined, { style: 'currency', currency: currency.toUpperCase() });
+			return true;
+		} catch (error) {
+			if (error instanceof RangeError) {
+				return false;
+			} else {
+				console.warn("Error creating Intl.NumberFormat instance");
+				return false;
+			}
+		}
+	}
+
+	private replaceCurrency(input: string): string {
 		// Check if a custom currency is being used
-		if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {
-			const currencyData = this.customCurrencyData[this.originalCurrency.toUpperCase()];
-			// Determine what symbol to replace 'XYZ' with based on the currencyDisplay option
+		if (this.originalCurrency && this.totalCurrencyData[this.originalCurrency.toUpperCase()]) {
+			const currencyData = this.totalCurrencyData[this.originalCurrency.toUpperCase()];
+			// Determine what symbol to replace `replacer` with based on the currencyDisplay option
 			let replacementValue;
 			switch (this.intlOptions.currencyDisplay) {
 				case 'narrowSymbol':
@@ -238,11 +282,27 @@ class ExchNumberFormat {
 					replacementValue =  this.addType(currencyData.symbol);
 					break;
 			}
-			// Use the determined replacement value for 'XYZ'
-			return formattedString.replace('XYZ', replacementValue);
+			// Use the determined replacement value for `replacer`
+			return input.replace(this.replacer, replacementValue);
+		} else if (this.originalCurrency) {
+			switch (this.intlOptions.currencyDisplay) {
+				case 'narrowSymbol':
+					input = this.addType(input);
+					break;
+				case 'code':
+					input = input.replace(this.originalCurrency, this.addType(this.originalCurrency));
+					break;
+				case 'name':
+					input =  this.addType(input);
+					break;
+				default:
+					input =  this.addType(input);
+					break;
+			}
+			return input;
 		}
-		// If not a custom currency or no need for replacement, return the original formatted string
-		return formattedString;
+		// If not a custom currency or no need for replacement/addition, return the original formatted string
+		return input;
 	}
 
 	private useDecimalStyle(): void {
@@ -263,8 +323,8 @@ class ExchNumberFormat {
 
 	private addType(value: string): string {
 		let output = value;
-		if (this.intlOptions.digitalized) {
-			output = this.intlOptions.digitalizedSymbol + output;
+		if (this.intlOptions.digitized) {
+			output = this.intlOptions.digitizedSymbol + output;
 		}
 		if (this.intlOptions.wrapped) {
 			output = this.intlOptions.wrappedSymbol + output;
