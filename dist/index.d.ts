@@ -5,15 +5,31 @@ interface RoundNumberOptions extends Intl.NumberFormatOptions {
     digitized?: boolean;
     digitizedSymbol?: string;
     useAliases?: boolean;
+    aliases?: {
+        [key: string]: string;
+    };
+    useCustomCurrency?: boolean;
+    customCurrency?: {
+        [key: string]: {
+            symbol: string;
+            narrowSymbol: string;
+            code: string;
+            name: string;
+            defaultDecimals: number;
+        };
+    };
 }
 declare class ExchNumberFormat {
     version: string;
+    private replacer;
     private formatter;
     private intlOptions;
     private customCurrencyData;
-    private aliases;
+    private totalCurrencyData;
     private originalCurrency;
-    constructor(locales: string | undefined, options?: RoundNumberOptions);
+    private totalAliases;
+    private internalAliases;
+    constructor(locales?: string | undefined, options?: RoundNumberOptions);
     format(number: number): string;
     formatToParts(number: number): Intl.NumberFormatPart[];
     isCurrencySupported(currency: string): boolean;
