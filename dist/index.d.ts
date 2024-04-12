@@ -2,8 +2,8 @@ interface RoundNumberOptions extends Intl.NumberFormatOptions {
     roundingMode?: 'ceil' | 'floor' | 'expand' | 'trunc' | 'halfCeil' | 'halfFloor' | 'halfExpand' | 'halfTrunc' | 'halfEven';
     wrapped?: boolean;
     wrappedSymbol?: string;
-    digitalized?: boolean;
-    digitalizedSymbol?: string;
+    digitized?: boolean;
+    digitizedSymbol?: string;
     useAliases?: boolean;
 }
 declare class ExchNumberFormat {
@@ -16,6 +16,7 @@ declare class ExchNumberFormat {
     constructor(locales: string | undefined, options?: RoundNumberOptions);
     format(number: number): string;
     formatToParts(number: number): Intl.NumberFormatPart[];
+    isCurrencySupported(currency: string): boolean;
     private replaceCurrency;
     private useDecimalStyle;
     private determineLocale;

@@ -1,6 +1,6 @@
 class ExchNumberFormat {
     constructor(locales, options = {}) {
-        this.version = '1.1.0';
+        this.version = '1.1.1';
         this.customCurrencyData = {
             'ADA': {
                 'symbol': '₳',
@@ -127,8 +127,8 @@ class ExchNumberFormat {
             compactDisplay: 'short',
             wrapped: false,
             wrappedSymbol: 'w',
-            digitalized: false,
-            digitalizedSymbol: 'd',
+            digitized: false,
+            digitizedSymbol: 'd',
             useAliases: true,
         };
         this.intlOptions = { ...defaultOptions, ...options };
@@ -142,13 +142,18 @@ class ExchNumberFormat {
             this.intlOptions.currency = 'XYZ';
             this.intlOptions.minimumFractionDigits = currencyData.defaultDecimals;
         }
-        else if (this.originalCurrency) {
-            this.intlOptions.style = 'currency';
+        try {
+            this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
         }
-        else {
-            this.useDecimalStyle();
+        catch (error) {
+            if (error instanceof RangeError) {
+                this.useDecimalStyle();
+                this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
+            }
+            else {
+                console.error("Error creating Intl.NumberFormat instance");
+            }
         }
-        this.formatter = new Intl.NumberFormat(setLocale, this.intlOptions);
     }
     format(number) {
         let formatted = this.formatter.format(number);
@@ -178,6 +183,15 @@ class ExchNumberFormat {
             });
         }
         return parts;
+    }
+    isCurrencySupported(currency) {
+        try {
+            new Intl.NumberFormat(undefined, { style: 'currency', currency: currency.toUpperCase() });
+            return true;
+        }
+        catch (error) {
+            return false;
+        }
     }
     replaceCurrency(formattedString) {
         if (this.originalCurrency && this.customCurrencyData[this.originalCurrency.toUpperCase()]) {

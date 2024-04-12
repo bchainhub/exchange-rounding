@@ -175,8 +175,8 @@ describe('Defaults', () => {
   });
 });
 
-describe('Wrapped coins', () => {
-  it('Default locale and no currency', () => {
+describe('Extended coins', () => {
+  it('Wrapped coins', () => {
     const formatter = new ExchNumberFormat(undefined, {
       style: 'currency',
       currency: 'BTC',
@@ -185,17 +185,82 @@ describe('Wrapped coins', () => {
     const result = formatter.format(1234.1234567899);
     expect(result).toBe('w₿ 1,234.12345679');
   });
-});
 
-describe('Digitalized coins', () => {
-  it('Default locale and no currency', () => {
+  it('Wrapped FIAT', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'USD',
+      wrapped: true,
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('w$1,234.12');
+  });
+
+  it('Digitized coins', () => {
     const formatter = new ExchNumberFormat(undefined, {
       style: 'currency',
       currency: 'BTC',
-      digitalized: true,
+      digitized: true,
     });
     const result = formatter.format(1234.1234567899);
     expect(result).toBe('d₿ 1,234.12345679');
+  });
+
+  it('Digitized FIAT', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'EUR',
+      digitized: true,
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('d€1,234.12');
+  });
+
+  it('Digitized FIAT - display code', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'EUR',
+      currencyDisplay: 'code',
+      digitized: true,
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('dEUR 1,234.12');
+  });
+
+  it('Added new coin', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'XOR',
+      customCurrency: {
+        'XOR': {
+          'symbol': 'x',
+          'narrowSymbol': 'x',
+          'code': 'XOR',
+          'name': 'XorGate',
+          'defaultDecimals': 2,
+        }
+      },
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('x 1,234.12');
+  });
+
+  it('Replaced existing coin', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'ETH',
+      customCurrency: {
+        'ETH': {
+          'symbol': 'e',
+          'narrowSymbol': 'e',
+          'code': 'ETH',
+          'name': 'Ether',
+          'defaultDecimals': 2,
+        },
+      },
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('e 1,234.12');
   });
 });
 
@@ -224,6 +289,30 @@ describe('Decomposed', () => {
     expect(result).toEqual([{"type": "currency", "value": "USD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "001"}, {"type": "group", "value": "’"}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "1235"}]);
   });
 
+  it('Wrapped USD with symbol, currency and minimum digits and decimals', () => {
+    const formatter = new ExchNumberFormat('en', {
+      style: 'currency',
+      currency: 'USD',
+      roundingMode: 'ceil',
+      currencyDisplay: 'symbol',
+      wrapped: true
+    });
+    const result = formatter.formatToParts(1234.1234567899);
+    expect(result).toEqual([{"type": "currency", "value": "w$"}, {"type": "integer", "value": "1"}, {"type": "group", "value": ","}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "13"}]);
+  });
+
+  it('Digitized USD with symbol, locale it-CH currency and minimum digits and decimals', () => {
+    const formatter = new ExchNumberFormat('it-CH', {
+      style: 'currency',
+      currency: 'USD',
+      roundingMode: 'ceil',
+      currencyDisplay: 'symbol',
+      digitized: true
+    });
+    const result = formatter.formatToParts(1234.1234567899);
+    expect(result).toEqual([{"type": "currency", "value": "dUSD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "1"}, {"type": "group", "value": "’"}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "13"}]);
+  });
+
   it('XCB with symbol, locale en currency and default 4 decimals', () => {
     const formatter = new ExchNumberFormat('en', {
       style: 'currency',
@@ -236,10 +325,37 @@ describe('Decomposed', () => {
   });
 });
 
-describe('Versioning', () => {
+describe('Additional', () => {
   it('Print current version', () => {
-    const formatter = new ExchNumberFormat(undefined);
+    const formatter = new ExchNumberFormat();
     const result = formatter.version;
-    expect(result).toBe('1.1.0');
+    expect(result).toBe('1.1.1');
+  });
+
+  it('Check if currency is supported - XCB should be', () => {
+    const formatter = new ExchNumberFormat(undefined);
+    const result = formatter.isCurrencySupported('xcb');
+    expect(result).toBe(true);
+  });
+
+  it('Check if currency is supported - USD should be', () => {
+    const formatter = new ExchNumberFormat(undefined);
+    const result = formatter.isCurrencySupported('usd');
+    expect(result).toBe(true);
+  });
+
+  it('Check if currency is supported - XPOP shouldn\'t be', () => {
+    const formatter = new ExchNumberFormat(undefined);
+    const result = formatter.isCurrencySupported('xpop');
+    expect(result).toBe(false);
+  });
+
+  it('Unknown currency', () => {
+    const formatter = new ExchNumberFormat(undefined, {
+      style: 'currency',
+      currency: 'XXX',
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('¤ 1,234.12');
   });
 });
