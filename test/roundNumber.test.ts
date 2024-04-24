@@ -356,6 +356,6 @@ describe('Additional', () => {
   it('Print current version', () => {
     const formatter = new ExchNumberFormat();
     const result = formatter.version;
-    expect(result).toBe('1.1.2');
+    expect(result).toBe('1.1.3');
   });
 });

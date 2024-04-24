@@ -1,6 +1,6 @@
 class ExchNumberFormat {
     constructor(locales, options = {}) {
-        this.version = '1.1.2';
+        this.version = '1.1.3';
         this.replacer = 'XYZ';
         this.totalCurrencyData = {};
         this.totalAliases = {};
