@@ -1,4 +1,6 @@
-export default {
+import type { Config } from 'jest';
+
+const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts'],
@@ -14,3 +16,5 @@ export default {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
 };
+
+export default config;
