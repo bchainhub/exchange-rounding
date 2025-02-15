@@ -6,18 +6,18 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please, provide as much details as possible to make proper evaluation and in the end resolve the bug report faster.
+        Please provide as much detail as possible to help us properly evaluate and resolve the bug report faster.
 
   - type: markdown
     attributes:
       value: |
-        Software specific details.
+        Software-specific details.
 
   - type: input
     id: os
     attributes:
       label: OS and version
-      description: Name and version of OS used.
+      description: Name and version of the OS used.
       placeholder: OS
     validations:
       required: true
@@ -26,7 +26,7 @@ body:
     id: bug
     attributes:
       label: Bug
-      description: Describe the Bug.
+      description: Describe the bug.
       placeholder: Bug description
     validations:
       required: true
@@ -44,7 +44,7 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      description: Describe the result you are expecting.
+      description: Describe the result you expect.
       placeholder: Result
     validations:
       required: true
@@ -60,4 +60,4 @@ body:
     id: additional
     attributes:
       label: Additional context
-      description: Please, place additional content or screenshots.
+      description: Please provide any additional context or screenshots.

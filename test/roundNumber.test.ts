@@ -41,7 +41,7 @@ describe('Added currencies', () => {
       currencyDisplay: 'narrowSymbol'
     });
     const result = formatter.format(1234.1234567899);
-    expect(result).toBe('USⓈ 1’234.12');
+    expect(result).toBe('$C 1’234.12');
   });
 });
 
@@ -356,6 +356,85 @@ describe('Additional', () => {
   it('Print current version', () => {
     const formatter = new ExchNumberFormat();
     const result = formatter.version;
-    expect(result).toBe('1.1.3');
+    expect(result).toBe('1.1.4');
+  });
+});
+
+describe('Extended Currencies', () => {
+  it('USDX with symbol, locale en-US', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USDX'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('$X 1,234.12');
+  });
+
+  it('EURX with name, locale de-DE', () => {
+    const formatter = new ExchNumberFormat('de-DE', {
+      style: 'currency',
+      currency: 'EURX',
+      currencyDisplay: 'name'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1.234,12 Euro X');
+  });
+
+  it('CHFX with narrowSymbol, locale fr-CH', () => {
+    const formatter = new ExchNumberFormat('fr-CH', {
+      style: 'currency',
+      currency: 'CHFX',
+      currencyDisplay: 'narrowSymbol'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1 234.12 ₣X');
+  });
+
+  it('XAU with symbol, locale en-US and 6 decimals', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'XAU'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('Au 1,234.123457');
+  });
+
+  it('XAG with name, locale en-GB and 6 decimals', () => {
+    const formatter = new ExchNumberFormat('en-GB', {
+      style: 'currency',
+      currency: 'XAG',
+      currencyDisplay: 'name'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1,234.123457 Silver');
+  });
+
+  it('XCU with symbol, locale es-ES and 2 decimals', () => {
+    const formatter = new ExchNumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'XCU'
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('1.234,12 Cu');
+  });
+
+  it('Wrapped XAU with symbol, locale en-US', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'XAU',
+      wrapped: true
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('wAu 1,234.123457');
+  });
+
+  it('Digitized XAG with symbol, locale en-US', () => {
+    const formatter = new ExchNumberFormat('en-US', {
+      style: 'currency',
+      currency: 'XAG',
+      digitized: true
+    });
+    const result = formatter.format(1234.1234567899);
+    expect(result).toBe('dAg 1,234.123457');
   });
 });

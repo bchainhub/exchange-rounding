@@ -11,7 +11,7 @@ interface RoundNumberOptions extends Intl.NumberFormatOptions {
 }
 
 class ExchNumberFormat {
-	version: string = '1.1.3';
+	version: string = '1.1.4';
 	private replacer: string = 'XYZ';
 	private formatter!: Intl.NumberFormat;
 	private intlOptions: RoundNumberOptions;
@@ -53,6 +53,13 @@ class ExchNumberFormat {
 				'name': 'CoreToken',
 				'defaultDecimals': 2,
 			},
+			'CHFX': {
+				'symbol': '₣X',
+				'narrowSymbol': '₣X',
+				'code': 'CHFX',
+				'name': 'Swiss Franc X',
+				'defaultDecimals': 2,
+			},
 			'DOT': {
 				'symbol': '•',
 				'narrowSymbol': '•',
@@ -74,6 +81,20 @@ class ExchNumberFormat {
 				'name': 'Ethereum',
 				'defaultDecimals': 4,
 			},
+			'EURC': {
+				'symbol': '€C',
+				'narrowSymbol': '€C',
+				'code': 'EURC',
+				'name': 'Euro Coin',
+				'defaultDecimals': 2,
+			},
+			'EURX': {
+				'symbol': '€X',
+				'narrowSymbol': '€X',
+				'code': 'EURX',
+				'name': 'Euro X',
+				'defaultDecimals': 2,
+			},
 			'LTC': {
 				'symbol': 'Ł',
 				'narrowSymbol': 'Ł',
@@ -82,38 +103,45 @@ class ExchNumberFormat {
 				'defaultDecimals': 3,
 			},
 			'SOL': {
-				'symbol': 'S◎L',
-				'narrowSymbol': 'S◎L',
+				'symbol': '◎',
+				'narrowSymbol': '◎',
 				'code': 'SOL',
 				'name': 'Solana',
 				'defaultDecimals': 2,
 			},
 			'TRX': {
-				'symbol': '₵',
-				'narrowSymbol': '₵',
+				'symbol': 'TRX',
+				'narrowSymbol': 'TRX',
 				'code': 'TRX',
 				'name': 'Tron',
 				'defaultDecimals': 2,
 			},
 			'USDC': {
-				'symbol': 'Ⓢ',
-				'narrowSymbol': 'USⓈ',
+				'symbol': '$C',
+				'narrowSymbol': '$C',
 				'code': 'USDC',
-				'name': 'USD Coin',
+				'name': 'US Dollar Coin',
 				'defaultDecimals': 2,
 			},
 			'USDT': {
 				'symbol': '₮',
-				'narrowSymbol': 'US₮',
+				'narrowSymbol': '₮',
 				'code': 'USDT',
-				'name': 'Tether',
+				'name': 'US Tether Dollar',
+				'defaultDecimals': 2,
+			},
+			'USDX': {
+				'symbol': '$X',
+				'narrowSymbol': '$X',
+				'code': 'USDX',
+				'name': 'US X Dollar',
 				'defaultDecimals': 2,
 			},
 			'XAB': {
-				'symbol': 't₡',
-				'narrowSymbol': 't₡',
+				'symbol': '₡t',
+				'narrowSymbol': '₡t',
 				'code': 'XAB',
-				'name': 'CoreDevin',
+				'name': 'Core Testnet',
 				'defaultDecimals': 3,
 			},
 			'XCB': {
@@ -124,10 +152,10 @@ class ExchNumberFormat {
 				'defaultDecimals': 3,
 			},
 			'XCE': {
-				'symbol': '₡',
-				'narrowSymbol': '₡',
+				'symbol': '₡e',
+				'narrowSymbol': '₡e',
 				'code': 'XCE',
-				'name': 'CoreKoliba',
+				'name': 'Core Enterprise',
 				'defaultDecimals': 3,
 			},
 			'XMR': {
@@ -138,8 +166,8 @@ class ExchNumberFormat {
 				'defaultDecimals': 3,
 			},
 			'XRP': {
-				'symbol': '✕',
-				'narrowSymbol': '✕',
+				'symbol': 'XRP',
+				'narrowSymbol': 'XRP',
 				'code': 'XRP',
 				'name': 'Ripple',
 				'defaultDecimals': 2,
@@ -151,6 +179,28 @@ class ExchNumberFormat {
 				'narrowSymbol': '¤',
 				'code': 'XXX',
 				'name': 'Unknown',
+				'defaultDecimals': 2,
+			},
+			// Commodities
+			'XAU': {
+				'symbol': 'Au',
+				'narrowSymbol': 'Au',
+				'code': 'XAU',
+				'name': 'Gold',
+				'defaultDecimals': 6,
+			},
+			'XAG': {
+				'symbol': 'Ag',
+				'narrowSymbol': 'Ag',
+				'code': 'XAG',
+				'name': 'Silver',
+				'defaultDecimals': 6,
+			},
+			'XCU': {
+				'symbol': 'Cu',
+				'narrowSymbol': 'Cu',
+				'code': 'XCU',
+				'name': 'Copper',
 				'defaultDecimals': 2,
 			},
 		};
