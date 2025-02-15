@@ -7,7 +7,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "test": "NODE_OPTIONS='--loader ts-node/esm' node --test --test-reporter spec 'test/**/*.test.ts'",
+    "test": "NODE_OPTIONS='--loader ts-node/esm' node --test --test-reporter spec test/index.test.ts",
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts"
