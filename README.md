@@ -1,14 +1,22 @@
 # Exchange Number Formatting (`ExchNumberFormat`)
 
+[![npm](https://img.shields.io/npm/v/exchange-rounding?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/exchange-rounding)
+[![License: CORE](https://img.shields.io/badge/License-CORE-yellow?logo=googledocs)](LICENSE)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/exchange-rounding?label=Size&logo=tsnode)](https://bundlephobia.com/package/exchange-rounding@latest)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/bchainhub?label=Sponsors&logo=githubsponsors&color=EA4AAA)](https://github.com/sponsors/bchainhub)
+
 `ExchNumberFormat` is a comprehensive and customizable number formatting utility, designed specifically for financial and cryptocurrency applications. It extends the standard `Intl.NumberFormat` functionality with support for custom currencies, including cryptocurrencies, and provides additional formatting options.
 
 ## Features
 
-- **Standard and Custom Currencies**: Extensive support for both standard ISO currencies and custom-defined currencies including cryptocurrencies.
-- **Rounding Modes**: Supports various rounding modes to meet different financial calculations requirements.
+- **Standard and Custom Currencies**: Extensive support for both standard ISO currencies and custom-defined currencies, including cryptocurrencies.
+- **Rounding Modes**: Supports various rounding modes to meet different financial calculation requirements.
 - **Locale-Aware Formatting**: Offers locale-aware formatting, supporting different number styles and notations.
 - **Custom Currency Attributes**: Manages custom attributes for each currency, such as symbols, codes, and decimal places.
-- **Dynamic Currency Support**: Dynamically adds or modifies currency definitions at runtime using `useCustomCurrency` and `customCurrency` options.
+- **Dynamic Currency Support**: Dynamically adds or modifies currency definitions at runtime using the `useCustomCurrency` and `customCurrency` options.
+- **Tested**: Robust test coverage.
+- **Tree Shaking**: Zero dependencies, no side effects.
 
 ## Installation
 
@@ -61,7 +69,7 @@ const customCurrencyData = {
         symbol: '₡',
         narrowSymbol: '₡',
         code: 'XCB',
-        name: 'CoreCoin',
+        name: 'Core',
         defaultDecimals: 2
     }
 };
@@ -72,7 +80,7 @@ const formatter = new ExchNumberFormat('en-US', {
     currency: 'XCB'
 });
 
-console.log(formatter.format(1234.567)); // Outputs: '₡1,234.57'
+console.log(formatter.format(1234.567)); // Output: '₡1,234.57'
 ```
 
 ## API Reference
@@ -83,7 +91,7 @@ Creates a new formatter instance configured with the specified locales and optio
 
 #### Parameters
 
-- `locales`: A string with a BCP 47 language tag, or an array of such strings.
+- `locales`: A string with a BCP 47 language tag or an array of such strings.
 - `options`: Configuration options for the formatter.
 
 #### Options
@@ -121,7 +129,7 @@ Returns an array of objects representing the number string in parts that can be 
 
 ### isCurrencySupported(currency)
 
-Checks if the specified currency is supported by the formatter. Returns `true` if the currency is supported, `false` otherwise. If the formatter failed, an error is thrown.
+Checks if the specified currency is supported by the formatter. Returns `true` if the currency is supported and `false` otherwise. If the formatter fails, an error is thrown.
 
 ### version
 
@@ -134,3 +142,14 @@ Contributions are welcome! Feel free to open an issue or submit a pull request o
 ## License
 
 This project is licensed under the [CORE License](LICENSE).
+
+## Funding
+
+If you find this project useful, please consider supporting it:
+
+- [GitHub Sponsors](https://github.com/sponsors/bchainhub)
+- [Core](https://blockindex.net/address/cb7147879011ea207df5b35a24ca6f0859dcfb145999)
+- [Bitcoin](https://www.blockchain.com/explorer/addresses/btc/bc1pd8guxjkr2p6n2kl388fdj2trete9w2fr89xlktdezmcctxvtzm8qsymg0d)
+- [Litecoin](https://www.blockchain.com/explorer/addresses/ltc/ltc1ql8dvx0wv0nh2vncpt9j3zqefaehsd25cwp7pfx)
+
+List of sponsors: [![GitHub Sponsors](https://img.shields.io/github/sponsors/bchainhub?label=Sponsors&logo=githubsponsors&color=EA4AAA)](https://github.com/sponsors/bchainhub)

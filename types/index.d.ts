@@ -5,9 +5,9 @@ export interface RoundNumberOptions extends Intl.NumberFormatOptions {
 	digitized?: boolean;
 	digitizedSymbol?: string;
 	useAliases?: boolean;
-	aliases?: { [key: string]: string };
+	aliases?: Record<string, string>;
 	useCustomCurrency?: boolean;
-	customCurrency?: { [key: string]: { symbol: string, narrowSymbol: string, code: string, name: string, defaultDecimals: number } };
+	customCurrency?: Record<string, CurrencyData>;
 }
 
 export interface CurrencyData {
@@ -22,13 +22,13 @@ export declare class ExchNumberFormat {
 	version: string;
 	private formatter: Intl.NumberFormat;
 	private intlOptions: RoundNumberOptions;
-	private customCurrencyData: { [key: string]: CurrencyData };
-	private totalCurrencyData: { [key: string]: CurrencyData };
+	private customCurrencyData: Record<string, CurrencyData>;
+	private totalCurrencyData: Record<string, CurrencyData>;
 	private originalCurrency: string | undefined;
-	private totalAliases: { [key: string]: string };
-	private internalAliases: { [key: string]: string };
+	private totalAliases: Record<string, string>;
+	private internalAliases: Record<string, string>;
 
-	constructor(locales?: string | undefined, options?: RoundNumberOptions);
+	constructor(locales?: string, options?: RoundNumberOptions);
 
 	format(number: number): string;
 	formatToParts(number: number): Intl.NumberFormatPart[];

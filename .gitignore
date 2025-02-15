@@ -6,8 +6,10 @@ npm-debug.log
 node_modules
 yarn.lock
 package-lock.json
+bun.lockb
 
-/dist-test/
+/dist
+/dist-test
 
 .DS_Store
 .AppleDouble
