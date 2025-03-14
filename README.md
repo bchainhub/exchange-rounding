@@ -106,6 +106,10 @@ Creates a new formatter instance configured with the specified locales and optio
 - `digitized`: Indicates if the numeric values should be displayed with digital symbols.
 - `digitizedSymbol`: The symbol used to represent digitized values.
 - `roundingMode`: The rounding mode to use when formatting numbers.
+- `cropZeros`: Controls the handling of trailing zeros in the decimal part:
+  - `true`: Removes all trailing zeros
+  - `false` (default): Keeps all trailing zeros according to `maximumFractionDigits`
+  - `number`: Keeps at least this many trailing zeros (e.g., `2` would ensure at least two decimal places)
 
 ### Rounding Modes
 

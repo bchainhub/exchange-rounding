@@ -424,3 +424,25 @@ test('Digitized XAG with symbol, locale en-US', () => {
   const result = formatter.format(1234.1234567899);
   assert.strictEqual(result, 'dAg 1,234.123457');
 });
+
+test('USD with symbol, locale en-US currency and cropping all trailing zeros', () => {
+  const formatter = new ExchNumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 4,
+    cropZeros: true
+  });
+  const result = formatter.format(1234.1000);
+  assert.strictEqual(result, '$1,234.1');
+});
+
+test('USD with symbol, locale en-US currency and keeping 2 minimum zeros', () => {
+  const formatter = new ExchNumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 4,
+    cropZeros: 2
+  });
+  const result = formatter.format(1234.1000);
+  assert.strictEqual(result, '$1,234.10');
+});

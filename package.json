@@ -1,6 +1,6 @@
 {
   "name": "exchange-rounding",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Exchange Number Formatting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -39,10 +39,10 @@
   "author": "Blockchain Hub",
   "license": "CORE",
   "devDependencies": {
-    "@types/node": "^22.13.4",
+    "@types/node": "^22.13.10",
     "esm": "^3.2.25",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   },
   "engines": {
     "node": ">=13.2.0"

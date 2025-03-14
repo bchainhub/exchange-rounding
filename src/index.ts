@@ -8,6 +8,7 @@ interface RoundNumberOptions extends Intl.NumberFormatOptions {
 	aliases?: { [key: string]: string };
 	useCustomCurrency?: boolean;
 	customCurrency?: { [key: string]: { symbol: string, narrowSymbol: string, code: string, name: string, defaultDecimals: number } };
+	cropZeros?: boolean | number;
 }
 
 class ExchNumberFormat {
@@ -226,6 +227,7 @@ class ExchNumberFormat {
 			aliases: {},
 			useCustomCurrency: true,
 			customCurrency: {},
+			cropZeros: false,
 		};
 
 		// Merge user-defined options with default options
@@ -274,7 +276,39 @@ class ExchNumberFormat {
 
 	format(number: number): string {
 		let formatted = this.formatter.format(number);
-		return this.replaceCurrency(formatted);
+		formatted = this.replaceCurrency(formatted);
+
+		// Crop trailing zeros if enabled
+		if (this.intlOptions.cropZeros !== false) {
+			// Use formatToParts to properly identify the decimal and fraction parts
+			const parts = this.formatter.formatToParts(number);
+			const decimalPart = parts.find(part => part.type === 'fraction');
+			const decimalSeparator = parts.find(part => part.type === 'decimal');
+
+			if (decimalPart && decimalSeparator) {
+				let fractionValue = decimalPart.value;
+
+				// Determine minimum zeros to keep
+				const minZeros = typeof this.intlOptions.cropZeros === 'number' ? this.intlOptions.cropZeros : 0;
+
+				// Remove trailing zeros while keeping the minimum required
+				const match = fractionValue.match(new RegExp(`(.*?)(0{0,${minZeros}})0*$`));
+				if (match) {
+					fractionValue = match[1] + match[2];
+				}
+
+				// Reconstruct the formatted string by replacing the original fraction part
+				if (fractionValue.length === 0) {
+					// Remove decimal separator and fraction if no digits remain
+					formatted = formatted.replace(`${decimalSeparator.value}${decimalPart.value}`, '');
+				} else {
+					// Replace only the fraction part
+					formatted = formatted.replace(decimalPart.value, fractionValue);
+				}
+			}
+		}
+
+		return formatted;
 	}
 
 	formatToParts(number: number): Intl.NumberFormatPart[] {

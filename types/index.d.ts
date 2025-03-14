@@ -8,6 +8,7 @@ export interface RoundNumberOptions extends Intl.NumberFormatOptions {
 	aliases?: Record<string, string>;
 	useCustomCurrency?: boolean;
 	customCurrency?: Record<string, CurrencyData>;
+	cropZeros?: boolean | number;
 }
 
 export interface CurrencyData {
