@@ -446,3 +446,25 @@ test('USD with symbol, locale en-US currency and keeping 2 minimum zeros', () =>
   const result = formatter.format(1234.1000);
   assert.strictEqual(result, '$1,234.10');
 });
+
+test('USD with symbol, locale en-US currency and cropping zeros with minimum 2 zeros but more allowed, when not zeros', () => {
+  const formatter = new ExchNumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 4,
+    cropZeros: 2
+  });
+  const result = formatter.format(20.001);
+  assert.strictEqual(result, '$20.001');
+});
+
+test('USD with symbol, locale en-US currency and cropping zeros with extended decimals', () => {
+  const formatter = new ExchNumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 4,
+    cropZeros: 2
+  });
+  const result = formatter.format(20.001);
+  assert.strictEqual(result, '$20.001');
+});

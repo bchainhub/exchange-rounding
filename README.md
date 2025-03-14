@@ -110,6 +110,7 @@ Creates a new formatter instance configured with the specified locales and optio
   - `true`: Removes all trailing zeros
   - `false` (default): Keeps all trailing zeros according to `maximumFractionDigits`
   - `number`: Keeps at least this many trailing zeros (e.g., `2` would ensure at least two decimal places)
+  - Note: Make sure to use `maximumFractionDigits` when using `cropZeros` to avoid unexpected results.
 
 ### Rounding Modes
 
