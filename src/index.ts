@@ -291,13 +291,17 @@ class ExchNumberFormat {
 				// Determine minimum zeros to keep
 				const minZeros = typeof this.intlOptions.cropZeros === 'number' ? this.intlOptions.cropZeros : 0;
 
-				// Remove trailing zeros while keeping the minimum required
-				const match = fractionValue.match(new RegExp(`(.*?)(0{0,${minZeros}})0*$`));
-				if (match) {
-					fractionValue = match[1] + match[2];
+				// Remove trailing zeros
+				const trimmedFraction = fractionValue.replace(/0+$/, '');
+
+				// Ensure we have at least minZeros decimal places
+				if (trimmedFraction.length < minZeros) {
+					fractionValue = trimmedFraction + '0'.repeat(minZeros - trimmedFraction.length);
+				} else {
+					fractionValue = trimmedFraction;
 				}
 
-				// Reconstruct the formatted string by replacing the original fraction part
+				// Reconstruct the formatted string
 				if (fractionValue.length === 0) {
 					// Remove decimal separator and fraction if no digits remain
 					formatted = formatted.replace(`${decimalSeparator.value}${decimalPart.value}`, '');

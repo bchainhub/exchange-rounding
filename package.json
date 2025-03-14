@@ -1,6 +1,6 @@
 {
   "name": "exchange-rounding",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Exchange Number Formatting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
