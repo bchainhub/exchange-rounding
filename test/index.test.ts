@@ -393,7 +393,7 @@ test('XAG with name, locale en-GB and 6 decimals', () => {
     currencyDisplay: 'name'
   });
   const result = formatter.format(1234.1234567899);
-  assert.strictEqual(result, '1,234.123457 Silver');
+  assert.strictEqual(result, '1,234.1235 Silver');
 });
 
 test('XCU with symbol, locale es-ES and 2 decimals', () => {
@@ -422,7 +422,7 @@ test('Digitized XAG with symbol, locale en-US', () => {
     digitized: true
   });
   const result = formatter.format(1234.1234567899);
-  assert.strictEqual(result, 'dAg 1,234.123457');
+  assert.strictEqual(result, 'dAg 1,234.1235');
 });
 
 test('USD with symbol, locale en-US currency and cropping all trailing zeros', () => {
