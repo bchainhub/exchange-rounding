@@ -61,6 +61,13 @@ class ExchNumberFormat {
 				'name': 'Swiss Franc X',
 				'defaultDecimals': 2,
 			},
+			'CNYX': {
+				'symbol': '¥X',
+				'narrowSymbol': '¥X',
+				'code': 'CNYX',
+				'name': 'Chinese Yuan X',
+				'defaultDecimals': 2,
+			},
 			'DOT': {
 				'symbol': '•',
 				'narrowSymbol': '•',
@@ -96,6 +103,13 @@ class ExchNumberFormat {
 				'name': 'Euro X',
 				'defaultDecimals': 2,
 			},
+			'LAKX': {
+				'symbol': '₭X',
+				'narrowSymbol': '₭X',
+				'code': 'LAKX',
+				'name': 'Lao Kip X',
+				'defaultDecimals': 2,
+			},
 			'LTC': {
 				'symbol': 'Ł',
 				'narrowSymbol': 'Ł',
@@ -103,11 +117,25 @@ class ExchNumberFormat {
 				'name': 'Litecoin',
 				'defaultDecimals': 3,
 			},
+			'RUBX': {
+				'symbol': '₽X',
+				'narrowSymbol': '₽X',
+				'code': 'RUBX',
+				'name': 'Russian Ruble X',
+				'defaultDecimals': 2,
+			},
 			'SOL': {
 				'symbol': '◎',
 				'narrowSymbol': '◎',
 				'code': 'SOL',
 				'name': 'Solana',
+				'defaultDecimals': 2,
+			},
+			'THBX': {
+				'symbol': '฿X',
+				'narrowSymbol': '฿X',
+				'code': 'THBX',
+				'name': 'Thai Baht X',
 				'defaultDecimals': 2,
 			},
 			'TRX': {
@@ -195,13 +223,27 @@ class ExchNumberFormat {
 				'narrowSymbol': 'Ag',
 				'code': 'XAG',
 				'name': 'Silver',
-				'defaultDecimals': 6,
+				'defaultDecimals': 4,
 			},
 			'XCU': {
 				'symbol': 'Cu',
 				'narrowSymbol': 'Cu',
 				'code': 'XCU',
 				'name': 'Copper',
+				'defaultDecimals': 2,
+			},
+			'XPD': {
+				'symbol': 'Pd',
+				'narrowSymbol': 'Pd',
+				'code': 'XPD',
+				'name': 'Palladium',
+				'defaultDecimals': 2,
+			},
+			'XPT': {
+				'symbol': 'Pt',
+				'narrowSymbol': 'Pt',
+				'code': 'XPT',
+				'name': 'Platinum',
 				'defaultDecimals': 2,
 			},
 		};
