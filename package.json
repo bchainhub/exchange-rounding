@@ -7,7 +7,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "test": "npm run build && TS_NODE_TRANSPILE_ONLY=true NODE_OPTIONS='--loader ts-node/esm' node --test --test-reporter spec test/index.test.ts",
+    "test": "npm run build && tsx --test --test-reporter spec test/index.test.ts",
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts"
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/node": "^26.6.6",
     "esm": "^3.2.25",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "engines": {
