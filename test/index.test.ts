@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import ExchNumberFormat from '../src/index.js';
+import ExchNumberFormat from '../dist/index.js';
 
 test('Bitcoin with symbol, locale en-US currency and default 8 decimals', () => {
   const formatter = new ExchNumberFormat('en-US', {
@@ -42,7 +42,8 @@ test('USDC with narrowSymbol, locale it-CH currency and default 2 decimals', () 
     currencyDisplay: 'narrowSymbol'
   });
   const result = formatter.format(1234.1234567899);
-  assert.strictEqual(result, '$C 1’234.12');
+	const group = new Intl.NumberFormat('it-CH', { style: 'currency', currency: 'XYZ', useGrouping: true }).formatToParts(1234).find(part => part.type === 'group')!.value;
+	assert.strictEqual(result, `$C 1${group}234.12`);
 });
 
 test('USD with symbol, locale en-US currency and minimum digits and decimals', () => {
@@ -277,7 +278,7 @@ test('USD with symbol, locale it-CH currency and minimum digits and decimals', (
     minimumFractionDigits: 4
   });
   const result = formatter.formatToParts(1234.1234567899);
-  assert.deepStrictEqual(result, [{"type": "currency", "value": "USD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "001"}, {"type": "group", "value": "’"}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "1235"}]);
+  assert.deepStrictEqual(result, [{"type": "currency", "value": "USD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "001"}, {"type": "group", "value": new Intl.NumberFormat('it-CH', { style: 'currency', currency: 'XYZ', useGrouping: true }).formatToParts(1234).find(part => part.type === 'group')!.value}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "1235"}]);
 });
 
 test('Wrapped USD with symbol, currency and minimum digits and decimals', () => {
@@ -301,7 +302,7 @@ test('Digitized USD with symbol, locale it-CH currency and minimum digits and de
     digitized: true
   });
   const result = formatter.formatToParts(1234.1234567899);
-  assert.deepStrictEqual(result, [{"type": "currency", "value": "dUSD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "1"}, {"type": "group", "value": "’"}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "13"}]);
+  assert.deepStrictEqual(result, [{"type": "currency", "value": "dUSD"}, {"type": "literal", "value": " "}, {"type": "integer", "value": "1"}, {"type": "group", "value": new Intl.NumberFormat('it-CH', { style: 'currency', currency: 'XYZ', useGrouping: true }).formatToParts(1234).find(part => part.type === 'group')!.value}, {"type": "integer", "value": "234"}, {"type": "decimal", "value": "."}, {"type": "fraction", "value": "13"}]);
 });
 
 test('XCB with symbol, locale en currency and default 4 decimals', () => {
@@ -345,7 +346,7 @@ test('Unknown currency', () => {
 test('Print current version', () => {
   const formatter = new ExchNumberFormat();
   const result = formatter.version;
-  assert.strictEqual(result, '1.1.4');
+  assert.strictEqual(result, '1.1.9');
 });
 
 test('USDX with symbol, locale en-US', () => {
@@ -374,7 +375,8 @@ test('CHFX with narrowSymbol, locale fr-CH', () => {
     currencyDisplay: 'narrowSymbol'
   });
   const result = formatter.format(1234.1234567899);
-  assert.strictEqual(result, '1 234.12 ₣X');
+  const group = new Intl.NumberFormat('fr-CH', { style: 'currency', currency: 'XYZ', useGrouping: true }).formatToParts(1234).find(part => part.type === 'group')!.value;
+	assert.strictEqual(result, `1${group}234.12 ₣X`);
 });
 
 test('XAU with symbol, locale en-US and 6 decimals', () => {
@@ -468,3 +470,27 @@ test('USD with symbol, locale en-US currency and cropping zeros with extended de
   const result = formatter.format(20.001);
   assert.strictEqual(result, '$20.001');
 });
+
+// Exact payment requests must retain BTC's eight-decimal precision.
+for (const locale of ['en-US', 'nl-NL', 'sk-SK']) {
+	for (const currency of ['btc', 'BTC']) {
+		test(`BTC payment precision in ${locale}, ${currency}`, () => {
+			const formatter = new ExchNumberFormat(locale, {
+				style: 'currency', currency, currencyDisplay: 'code', cropZeros: true
+			});
+			for (const amount of [0.000123, 0.00000001, 0.00012345, 0.00009999, 1.23456789, 0.00012300, 0.12345678, 0.10000000, 1.00000000, 0.00000000]) {
+				const expected = new Intl.NumberFormat(locale, {
+					minimumFractionDigits: 0, maximumFractionDigits: 8, useGrouping: false
+				}).format(amount);
+				assert.ok(formatter.format(amount).includes(expected), formatter.format(amount));
+				const padded = new ExchNumberFormat(locale, {
+					style: 'currency', currency, currencyDisplay: 'code', cropZeros: false
+				});
+				const eightDecimals = new Intl.NumberFormat(locale, {
+					minimumFractionDigits: 8, maximumFractionDigits: 8, useGrouping: false
+				}).format(amount);
+				assert.ok(padded.format(amount).includes(eightDecimals), padded.format(amount));
+			}
+		});
+	}
+}
